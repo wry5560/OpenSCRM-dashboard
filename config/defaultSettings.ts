@@ -1,4 +1,4 @@
-import { Settings as ProSettings } from '@ant-design/pro-layout';
+import type { ProSettings } from '@ant-design/pro-components';
 
 type DefaultSettings = Partial<ProSettings> & {
   pwa: boolean;

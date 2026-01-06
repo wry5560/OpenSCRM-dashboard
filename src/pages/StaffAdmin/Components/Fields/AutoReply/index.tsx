@@ -1,6 +1,6 @@
 import type {Dispatch, SetStateAction,MutableRefObject} from 'react';
 import React, { useEffect, useRef, useState} from 'react';
-import type {ProFormProps} from '@ant-design/pro-form/lib/layouts/ProForm';
+import type {ProFormProps} from '@ant-design/pro-components';
 import type {Attachment, MsgType, WelcomeMsg} from '@/pages/StaffAdmin/CustomerWelcomeMsg/data';
 import {
   createFromIconfontCN,
@@ -19,13 +19,14 @@ import phoneImage from '@/assets/phone.png';
 import avatarDefault from '@/assets/avatar-default.svg';
 import ContentEditable from 'react-contenteditable';
 import {ReactSortable} from 'react-sortablejs';
-import ProForm, {
+import {
   ModalForm,
+  ProForm,
   ProFormDependency,
   ProFormSwitch,
   ProFormText,
   ProFormTextArea,
-} from '@ant-design/pro-form';
+} from '@ant-design/pro-components';
 import ImageUploader from '@/pages/StaffAdmin/Components/Fields/ImageUploader';
 import styles from './index.less';
 import type { GetSignedURLResult} from "@/services/common";

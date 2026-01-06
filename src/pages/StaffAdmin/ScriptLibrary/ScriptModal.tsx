@@ -18,13 +18,13 @@ import GroupModal from "@/pages/StaffAdmin/ScriptLibrary/GroupModal";
 import type {DepartmentOption} from "@/pages/StaffAdmin/Components/Modals/DepartmentSelectionModal";
 import {ParseURL} from "@/services/common";
 import {
+  ProForm,
   ProFormDependency,
   ProFormList,
   ProFormRadio,
   ProFormText,
   ProFormTextArea
-} from '@ant-design/pro-form';
-import ProForm from '@ant-design/pro-form';
+} from '@ant-design/pro-components';
 
 export type ScriptModalProps = Omit<ModalProps, 'onFinish' | 'visible' | 'initialValues'> & {
   type?: 'create' | 'edit';

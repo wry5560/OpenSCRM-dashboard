@@ -1,11 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-components';
+import {FooterToolbar, ModalForm, PageContainer, ProFormSelect, ProFormText, ProTable} from '@ant-design/pro-components';
 import {Button, Col, Divider, Dropdown, Menu, Modal, Row, Tag} from 'antd';
-import type {ActionType} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import type {ProColumns} from '@ant-design/pro-table/es';
-import {ModalForm, ProFormSelect} from '@ant-design/pro-form';
-import {ProFormText} from '@ant-design/pro-form/es';
 import {
   CaretDownOutlined,
   CloudDownloadOutlined,
@@ -28,11 +24,11 @@ import {HandleRequest, ProTableRequestAdapter} from '@/utils/utils';
 import {message} from 'antd/es';
 import {False, LSExtStaffAdminID, True} from '../../../../config/constant';
 import styles from './index.less';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import type {ContactWayGroupItem, ContactWayItem} from '@/pages/StaffAdmin/ContactWay/data';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
-import {history} from 'umi';
+import {history} from '@umijs/max';
 import CollapsedStaffs from '@/pages/StaffAdmin/Components/Columns/CollapsedStaffs';
 import CollapsedTags from '@/pages/StaffAdmin/Components/Columns/CollapsedTags';
 import {uniqWith} from 'lodash';
@@ -209,7 +205,7 @@ const ContactWayList: React.FC = () => {
         return (
           <div
             dangerouslySetInnerHTML={{
-              __html: moment(item.created_at).format('YYYY-MM-DD HH:mm').split(' ').join('<br />'),
+              __html: dayjs(item.created_at).format('YYYY-MM-DD HH:mm').split(' ').join('<br />'),
             }}
           />
         );
@@ -467,7 +463,7 @@ const ContactWayList: React.FC = () => {
                     }
                   }
                   const content = await zip.generateAsync({type: 'blob'});
-                  FileSaver.saveAs(content, `渠道活码_${moment().format('YYYY_MM_DD')}.zip`);
+                  FileSaver.saveAs(content, `渠道活码_${dayjs().format('YYYY_MM_DD')}.zip`);
                   actionRef.current?.clearSelected?.();
                   return true;
                 },
@@ -638,7 +634,7 @@ const ContactWayList: React.FC = () => {
               <div className={styles.formItem}>
                 <span className={styles.title}>创建时间：</span>
                 <span className='date'>
-                  {moment(currentItem.created_at).format('YYYY-MM-DD HH:mm')}
+                  {dayjs(currentItem.created_at).format('YYYY-MM-DD HH:mm')}
                 </span>
               </div>
               <div className={styles.formItem}>

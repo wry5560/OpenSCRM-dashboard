@@ -16,11 +16,12 @@ import {TagContext} from '../TagProvider';
 import {unstable_batchedUpdates} from "react-dom";
 import {useContext} from 'react';
 import {ParseURL} from "@/services/common";
-import ProForm, {
+import {
   ModalForm,
+  ProForm,
   ProFormText,
   ProFormTextArea,
-} from '@ant-design/pro-form';
+} from '@ant-design/pro-components';
 
 interface MaterialProps {
   fileType: string;

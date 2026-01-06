@@ -9,9 +9,8 @@ import {
   MoreOutlined,
   PlusSquareFilled,
 } from '@ant-design/icons';
-import type {ActionType} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import type {ProColumns} from '@ant-design/pro-table/es';
+import type {ActionType, ProColumns} from '@ant-design/pro-components';
+import {FooterToolbar, ProTable} from '@ant-design/pro-components';
 import {Button, Divider, Dropdown, Menu, Modal, Space, Tooltip} from 'antd';
 import {message} from 'antd/es';
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
@@ -32,9 +31,8 @@ import ScriptModal, {typeEnums} from "@/pages/StaffAdmin/ScriptLibrary/ScriptMod
 import type {Dictionary} from 'lodash';
 import _ from 'lodash';
 import ScriptContentPreView from "@/pages/StaffAdmin/ScriptLibrary/components/ScriptContentPreView";
-import type {FrontEndReplyDetailParams} from './ScriptModal'
-import {FooterToolbar} from "@ant-design/pro-layout";
-import moment from "moment";
+import type {FrontEndReplyDetailParams} from './ScriptModal';
+import dayjs from "dayjs";
 
 const EnterpriseScript: (props: any, ref: any) => JSX.Element = (props, ref) => {
   const actionRef = useRef<ActionType>();
@@ -194,7 +192,7 @@ const EnterpriseScript: (props: any, ref: any) => JSX.Element = (props, ref) => 
         return (
           <div
             dangerouslySetInnerHTML={{
-              __html: moment(item.created_at)
+              __html: dayjs(item.created_at)
                 .format('YYYY-MM-DD HH:mm')
                 .split(' ')
                 .join('<br />'),

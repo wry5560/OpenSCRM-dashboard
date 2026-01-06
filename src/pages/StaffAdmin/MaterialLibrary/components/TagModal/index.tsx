@@ -6,7 +6,7 @@ import {Button, Empty, Input, Row, Space, Tag, Modal} from 'antd';
 import styles from "./index.less";
 import {PlusOutlined, CloseOutlined} from "@ant-design/icons";
 import {CreateMaterialLibraryTag, DeleteMaterialLibraryTag} from "../../service";
-import {ModalForm} from "@ant-design/pro-form";
+import {ModalForm} from "@ant-design/pro-components";
 
 export type FormParams = {
   selected_tag_ids: string[];

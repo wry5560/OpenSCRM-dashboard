@@ -6,7 +6,7 @@ import {
   FolderFilled,
   PlusOutlined,
 } from '@ant-design/icons';
-import ProForm, {ProFormDependency, ProFormRadio, ProFormText} from '@ant-design/pro-form';
+import {ProForm, ProFormDependency, ProFormRadio, ProFormText} from '@ant-design/pro-components';
 import type {FormInstance, ModalProps} from 'antd';
 import {Badge, Button, message, Modal, Row, Space} from 'antd';
 import type {Dispatch, SetStateAction} from 'react';

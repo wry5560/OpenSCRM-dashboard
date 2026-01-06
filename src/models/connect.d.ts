@@ -1,4 +1,4 @@
-import type {MenuDataItem, Settings as ProSettings} from '@ant-design/pro-layout';
+import type {MenuDataItem, ProSettings} from '@ant-design/pro-components';
 import {GlobalModelState} from './global';
 import type {StaffAdminModelState} from '@/models/staffAdmin';
 

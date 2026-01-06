@@ -1,9 +1,9 @@
 import { Tag, Tooltip } from 'antd';
-import type { Settings as ProSettings } from '@ant-design/pro-layout';
+import type { ProSettings } from '@ant-design/pro-components';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import React from 'react';
-import type { ConnectProps } from 'umi';
-import { connect } from 'umi';
+import type { ConnectProps } from '@umijs/max';
+import { connect } from '@umijs/max';
 import type { ConnectState } from '@/models/connect';
 import styles from './index.less';
 import StaffAdminAvatarDropdown from '@/components/GlobalHeader/StaffAdminAvatarDropdown';
@@ -13,13 +13,15 @@ export type GlobalHeaderRightProps = {
 } & Partial<ConnectProps> &
   Partial<ProSettings>;
 
-const ENVTagColor = {
+const ENVTagColor: Record<string, string> = {
   dev: 'orange',
   test: 'green',
   pre: '#87d068',
 };
 
-const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
+const REACT_APP_ENV = process.env.REACT_APP_ENV;
+
+const GlobalHeaderRight: React.FC<GlobalHeaderRightProps> = (props) => {
   const { theme, layout } = props;
   let className = styles.right;
 

@@ -1,13 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Badge, Button, Divider, Form, message, Space, Typography} from 'antd';
-import ProForm, {
+import type {ProFormProps} from '@ant-design/pro-components';
+import {
+  ProForm,
   ProFormDateRangePicker,
   ProFormDateTimePicker,
   ProFormDependency,
   ProFormRadio,
-} from '@ant-design/pro-form';
+} from '@ant-design/pro-components';
 import type {CreateCustomerMassMsgParam, CustomerMassMsgItem, Msg} from '@/pages/StaffAdmin/CustomerMassMsg/data';
-import type {ProFormProps} from '@ant-design/pro-form/lib/layouts/ProForm';
 import styles from './form.less';
 import {CloseCircleOutlined, PlusOutlined} from '@ant-design/icons';
 import type {StaffOption} from '@/pages/StaffAdmin/Components/Modals/StaffTreeSelectionModal';

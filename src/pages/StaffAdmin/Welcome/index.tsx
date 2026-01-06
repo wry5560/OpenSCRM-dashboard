@@ -4,7 +4,7 @@ import RcResizeObserver from 'rc-resize-observer';
 import styles from './index.less';
 import type {FormInstance} from 'antd';
 import {Button, Col, DatePicker, Divider, Form, message, Radio, Row, Select, Typography,} from 'antd';
-import {connect, history} from 'umi';
+import {connect, history} from '@umijs/max';
 import type {StaffAdminInterface} from '@/services/staffAdmin';
 import type {ConnectProps} from '@@/plugin-dva/connect';
 import type {ConnectState} from '@/models/connect';
@@ -17,7 +17,7 @@ import StaffTreeSelect from '@/pages/StaffAdmin/Components/Fields/StaffTreeSelec
 import type {StaffOption} from '@/pages/StaffAdmin/Components/Modals/StaffTreeSelectionModal';
 import type {SimpleStaffInterface} from '@/services/staff';
 import {QuerySimpleStaffs} from '@/services/staff';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import QrcodeImage from '../../../assets/qrcode.png';
 import ChatImage from '../../../assets/chat.svg';
 import Paragraph from 'antd/es/typography/Paragraph';
@@ -71,7 +71,7 @@ const Welcome: React.FC<WelcomeProps> = (props) => {
   const initialValues = {
     statistic_type: 'total',
     date_range_type: 'week',
-    date_range: [moment().add(-7, 'd'), moment()],
+    date_range: [dayjs().add(-7, 'd'), dayjs()],
     ext_staff_ids: [],
   };
 
@@ -311,19 +311,19 @@ const Welcome: React.FC<WelcomeProps> = (props) => {
                     const transformedValues = {...values};
                     if (changedValues?.date_range_type) {
                       let date_range = [
-                        moment(),
-                        moment(),
+                        dayjs(),
+                        dayjs(),
                       ];
                       if (transformedValues.date_range_type === 'week') {
                         date_range = [
-                          moment().add(-7, 'd'),
-                          moment(),
+                          dayjs().add(-7, 'd'),
+                          dayjs(),
                         ];
                       }
                       if (transformedValues.date_range_type === 'month') {
                         date_range = [
-                          moment().add(-30, 'd'),
-                          moment(),
+                          dayjs().add(-30, 'd'),
+                          dayjs(),
                         ];
                       }
 

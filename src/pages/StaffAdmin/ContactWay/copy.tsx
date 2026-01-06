@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
+import {PageContainer} from '@ant-design/pro-components';
 import {message} from 'antd/es';
-import {history} from 'umi';
+import {history} from '@umijs/max';
 import {LeftOutlined} from '@ant-design/icons';
 import ProCard from '@ant-design/pro-card';
 import type {StaffOption} from '../Components/Modals/StaffTreeSelectionModal';
@@ -58,7 +58,7 @@ const CopyContactWay: React.FC = () => {
 
   return (
     <PageContainer
-      onBack={() => history.goBack()}
+      onBack={() => history.back()}
       backIcon={<LeftOutlined />}
       header={{
         title: '复制创建渠道活码',

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import type { ProFormSelectProps } from '@ant-design/pro-form/lib/components/Select';
+import type { ProFormSelectProps, TableFormItem } from '@ant-design/pro-components';
 import { Button, Form, Input, InputNumber, Popover } from 'antd';
-import type { TableFormItem } from '@ant-design/pro-table/lib/components/Form/FormRender';
 
 export type NumberRangeInputProps = {
   label: string;

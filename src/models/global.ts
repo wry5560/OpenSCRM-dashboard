@@ -1,4 +1,4 @@
-import type {Reducer} from 'umi';
+import type {Reducer} from '@umijs/max';
 //
 // import type {NoticeIconData} from '@/components/NoticeIcon';
 //

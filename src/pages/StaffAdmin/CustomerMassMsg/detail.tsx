@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-components';
 import { message } from 'antd/es';
-import { history } from 'umi';
+import { history } from '@umijs/max';
 import { LeftOutlined } from '@ant-design/icons';
 import ProCard from '@ant-design/pro-card';
 import type { CustomerMassMsgItem } from '@/pages/StaffAdmin/CustomerMassMsg/data';
@@ -10,7 +10,7 @@ import { Col, Descriptions, Row, Typography } from 'antd';
 import styles from './detail.less';
 import AutoReplyPreview from '@/pages/StaffAdmin/Components/Sections/AutoReplyPreview';
 import { CustomerMassMsgTypeLabels } from '@/pages/StaffAdmin/CustomerMassMsg/index';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const CustomerMassMsgDetail: React.FC = () => {
   const [currentItem, setCurrentItem] = useState<CustomerMassMsgItem>();
@@ -28,7 +28,7 @@ const CustomerMassMsgDetail: React.FC = () => {
 
   return (
     <PageContainer
-      onBack={() => history.goBack()}
+      onBack={() => history.back()}
       backIcon={<LeftOutlined />}
       header={{
         title: '群发详情',
@@ -57,7 +57,7 @@ const CustomerMassMsgDetail: React.FC = () => {
               <Descriptions.Item
                 label='发送状态'>{CustomerMassMsgTypeLabels[currentItem?.mission_status || 1]}</Descriptions.Item>
               <Descriptions.Item
-                label='发送时间'>{moment(currentItem?.created_at).format('YYYY-MM-DD HH:mm')}</Descriptions.Item>
+                label='发送时间'>{dayjs(currentItem?.created_at).format('YYYY-MM-DD HH:mm')}</Descriptions.Item>
             </Descriptions>
           </Col>
           <Col lg={4} md={8} sm={10} className={styles.previewContainer}>

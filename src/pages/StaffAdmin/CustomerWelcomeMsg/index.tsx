@@ -1,15 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, Divider, Modal } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import type { CustomerWelcomeMsgItem, WelcomeMsg } from '@/pages/StaffAdmin/CustomerWelcomeMsg/data';
 import { Delete, Query } from '@/pages/StaffAdmin/CustomerWelcomeMsg/service';
-import type { ProColumns } from '@ant-design/pro-table/es';
 import { history } from '@@/core/history';
-import type { ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import { HandleRequest, ProTableRequestAdapter } from '@/utils/utils';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import CollapsedStaffs from '@/pages/StaffAdmin/Components/Columns/CollapsedStaffs';
 import AutoReplyPreviewModal from '@/pages/StaffAdmin/Components/Modals/AutoReplyPreviewModal';
 
@@ -80,7 +78,7 @@ const CustomerWelcomeMsgList: React.FC = () => {
         return (
           <div
             dangerouslySetInnerHTML={{
-              __html: moment(item.created_at).format('YYYY-MM-DD HH:mm').split(' ').join('<br />'),
+              __html: dayjs(item.created_at).format('YYYY-MM-DD HH:mm').split(' ').join('<br />'),
             }}
           />
         );
@@ -96,7 +94,7 @@ const CustomerWelcomeMsgList: React.FC = () => {
         return (
           <div
             dangerouslySetInnerHTML={{
-              __html: moment(item.updated_at).format('YYYY-MM-DD HH:mm').split(' ').join('<br />'),
+              __html: dayjs(item.updated_at).format('YYYY-MM-DD HH:mm').split(' ').join('<br />'),
             }}
           />
         );

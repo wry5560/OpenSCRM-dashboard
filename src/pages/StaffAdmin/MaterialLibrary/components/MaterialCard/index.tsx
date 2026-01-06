@@ -5,7 +5,7 @@ import pdfpng from '@/assets/file-icon-pdf.svg'
 import pptpng from '@/assets/file-icon-ppt.svg'
 import wordpng from '@/assets/file-icon-word.svg'
 import excelpng from '@/assets/file-icon-excel.svg'
-import moment from "moment";
+import dayjs from "dayjs";
 import {parseFileSize} from '@/utils/utils'
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import {TagContext} from '../../TagProvider';
@@ -91,7 +91,7 @@ const MaterialCard: React.FC<Material.Item & Callback> = (props) => {
             material_tag_list?.length > 0 && renderTagBox()
           }
           <div className={styles.operateFooter}>
-            <span>创建时间：{moment(created_at).format('YYYY-MM-DD')}</span>
+            <span>创建时间：{dayjs(created_at).format('YYYY-MM-DD')}</span>
             {renderOperator()}
           </div>
 
@@ -144,7 +144,7 @@ const MaterialCard: React.FC<Material.Item & Callback> = (props) => {
             material_tag_list?.length > 0 && renderTagBox()
           }
           <div className={styles.operateFooter}>
-            <span>创建时间：{moment(created_at).format('YYYY-MM-DD')}</span>
+            <span>创建时间：{dayjs(created_at).format('YYYY-MM-DD')}</span>
             {renderOperator()}
           </div>
 

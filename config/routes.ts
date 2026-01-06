@@ -51,7 +51,6 @@ export default [
       },
       {
         path: '/',
-        exact: true,
         redirect: '/staff-admin/login',
       },
 
@@ -67,7 +66,6 @@ export default [
             routes: [
               {
                 path: '/staff-admin/',
-                exact: true,
                 redirect: '/staff-admin/welcome',
               },
               {

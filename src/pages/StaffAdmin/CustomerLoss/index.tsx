@@ -1,8 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-components';
+import {ModalForm, PageContainer, ProFormSwitch, ProTable} from '@ant-design/pro-components';
 import {Button, Space} from 'antd';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import type {CustomerLossNotifyRuleInterface} from '@/pages/StaffAdmin/CustomerLoss/service';
 import {
   ExportCustomerLoss,
@@ -12,11 +11,10 @@ import {
 } from '@/pages/StaffAdmin/CustomerLoss/service';
 import {HandleRequest, ProTableRequestAdapter} from '@/utils/utils';
 import styles from './index.less';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import type {CustomerLossItem} from '@/pages/StaffAdmin/CustomerLoss/data';
 import {CloudDownloadOutlined, SettingOutlined} from '@ant-design/icons';
 import {message} from 'antd/es';
-import {ModalForm, ProFormSwitch} from '@ant-design/pro-form';
 import {False, True} from '../../../../config/constant';
 import StaffTreeSelect from '@/pages/StaffAdmin/Components/Fields/StaffTreeSelect';
 import NumberRangeInput from '@/pages/StaffAdmin/Components/Fields/NumberRangeInput';
@@ -162,7 +160,7 @@ const CustomerLossList: React.FC = () => {
         return (
           <div
             dangerouslySetInnerHTML={{
-              __html: moment(item.customer_delete_staff_at)
+              __html: dayjs(item.customer_delete_staff_at)
                 .format('YYYY-MM-DD HH:mm')
                 .split(' ')
                 .join('<br />'),
@@ -181,7 +179,7 @@ const CustomerLossList: React.FC = () => {
         return (
           <div
             dangerouslySetInnerHTML={{
-              __html: moment(item.relation_create_at)
+              __html: dayjs(item.relation_create_at)
                 .format('YYYY-MM-DD HH:mm')
                 .split(' ')
                 .join('<br />'),

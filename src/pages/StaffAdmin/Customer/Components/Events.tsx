@@ -1,14 +1,12 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useRef, useCallback} from 'react'
 import styles from './index.less'
 import {CustomerEvents} from "@/pages/StaffAdmin/Customer/data";
 import {Dictionary} from "lodash";
 import {StaffOption} from "@/pages/StaffAdmin/Components/Modals/StaffTreeSelectionModal";
 import _ from 'lodash'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import {Spin, BackTop, Empty, Radio} from 'antd'
-import {useLoadMore} from '@umijs/hooks';
 import {QueryCustomerEvents} from "@/pages/StaffAdmin/Customer/service";
-import {FnParams} from "@umijs/hooks/es/useLoadMore";
 import {useInViewport} from 'ahooks';
 import {TagsFilled} from "@ant-design/icons";
 
@@ -30,6 +28,8 @@ const customerEventType = {
   'update_remark': '修改信息',
 }
 
+const PAGE_SIZE = 20;
+
 const Events: React.FC<EventsProps> = (props) => {
   const {simpleRender, data, extCustomerID} = props
   const [currentType, setCurrentType] = useState('')
@@ -37,55 +37,77 @@ const Events: React.FC<EventsProps> = (props) => {
   const [eventsList, setEventsList] = useState<CustomerEvents.Item[]>([])
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const [eventListLoading, setEventListLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+  const [noMore, setNoMore] = useState(false)
   const inViewPort = useInViewport(loadMoreRef);
 
-  const getEvents = (page_size?: number, page?: number) => {
-    return QueryCustomerEvents({
-      ext_customer_id: extCustomerID,
-      ext_staff_id: localStorage.getItem('extStaffAdminID') as string,
-      page_size,
-      page,
-      event_type: currentType
-    }).then(res => {
-      console.log('QueryCustomerEventsQueryCustomerEvents', res)
-      setEventsList([...eventsList].concat(res?.data?.items).filter(elem => elem !== null))
-      setEventListLoading(false)
-      return Promise.resolve({data: res?.data?.items || [], total: res?.data?.total_rows})
-    })
-  }
+  const getEvents = useCallback(async (pageNum: number, reset = false) => {
+    if (reset) {
+      setEventListLoading(true)
+    } else {
+      setLoadingMore(true)
+    }
 
-  const asyncFn = ({pageSize, page}: FnParams): Promise<{
-    total: number;
-    data: any[];
-  }> => {
-    return getEvents(pageSize, page).then(res => {
-      return Promise.resolve({
-        total: res?.total,
-        data: res?.data
-      })
-    })
-  }
+    try {
+      const res = await QueryCustomerEvents({
+        ext_customer_id: extCustomerID,
+        ext_staff_id: localStorage.getItem('extStaffAdminID') as string,
+        page_size: PAGE_SIZE,
+        page: pageNum,
+        event_type: currentType
+      });
 
-  const {loadingMore, reload, loadMore, noMore} = useLoadMore<any, any>(
-    asyncFn,
-    {
-      initPageSize: 20,
-      incrementSize: 20,
-    },
-  );
+      const items = res?.data?.items || [];
+      const totalRows = res?.data?.total_rows || 0;
 
+      if (reset) {
+        setEventsList(items.filter((elem: any) => elem !== null));
+      } else {
+        setEventsList(prev => [...prev, ...items].filter(elem => elem !== null));
+      }
+
+      setTotal(totalRows);
+      setNoMore((reset ? items.length : eventsList.length + items.length) >= totalRows);
+      setPage(pageNum);
+    } finally {
+      setEventListLoading(false);
+      setLoadingMore(false);
+    }
+  }, [extCustomerID, currentType, eventsList.length]);
+
+  const loadMore = useCallback(() => {
+    if (!loadingMore && !noMore) {
+      getEvents(page + 1);
+    }
+  }, [getEvents, loadingMore, noMore, page]);
+
+  const reload = useCallback(() => {
+    setEventsList([]);
+    setPage(1);
+    setNoMore(false);
+    getEvents(1, true);
+  }, [getEvents]);
+
+  // 初始加载
   useEffect(() => {
-    if (inViewPort && !simpleRender && eventsList.length >= 20) {
+    reload();
+  }, [currentType, extCustomerID]);
+
+  // 滚动加载更多
+  useEffect(() => {
+    if (inViewPort && !simpleRender && eventsList.length >= PAGE_SIZE && !loadingMore && !noMore) {
       loadMore()
     }
-  }, [inViewPort])
+  }, [inViewPort, simpleRender, eventsList.length, loadingMore, noMore, loadMore])
 
   useEffect(() => {
     const temp = _.groupBy(simpleRender ? data : eventsList, (item) => {
-      return moment(item?.created_at).format('MMM Do YYYY,dddd')
+      return dayjs(item?.created_at).format('MMM Do YYYY,dddd')
     })
     setGroupData(temp)
-  }, [data, eventsList])
+  }, [data, eventsList, simpleRender])
 
   const render = () => {
     return <div className={styles.groupByDay}>
@@ -99,7 +121,7 @@ const Events: React.FC<EventsProps> = (props) => {
                   return <div className={styles.eventItem}>
                     <div className={styles.timeHeader}>
                       <TagsFilled />
-                      <span>{moment(item?.created_at).format('h:mm')}</span>
+                      <span>{dayjs(item?.created_at).format('h:mm')}</span>
                     </div>
                     <div className={styles.infoBottom}>
                       <div className={styles.infoBox}>
@@ -118,9 +140,6 @@ const Events: React.FC<EventsProps> = (props) => {
   }
   const onRadioChange = (e: any) => {
     setCurrentType(e.target.value)
-    setEventListLoading(true)
-    setEventsList([])
-    reload()
   }
 
   return <div className={styles.events} style={{minHeight:300}}>
@@ -159,5 +178,3 @@ const Events: React.FC<EventsProps> = (props) => {
 
 }
 export default Events;
-
-

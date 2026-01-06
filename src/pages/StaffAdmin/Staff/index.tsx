@@ -1,19 +1,17 @@
 import React, {useRef, useState} from 'react';
 import type {CommonResp} from '@/services/common';
 import {SyncOutlined} from '@ant-design/icons';
-import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-components';
+import {PageContainer, ProTable} from '@ant-design/pro-components';
 import {Alert, Button, Space} from 'antd';
 import {message} from 'antd/es';
 import Text from 'antd/es/typography/Text';
 import {Sync} from './service';
 import styles from './index.less'
-import type {ActionType} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import type {ProColumns} from '@ant-design/pro-table/es';
 import {QueryStaffsList} from './service';
 import {ProTableRequestAdapter} from '@/utils/utils';
 import DepartmentTree from './components/DepartmentTree';
-import {history} from 'umi'
+import {history} from '@umijs/max'
 import {Tooltip} from 'antd';
 
 const StaffList: React.FC = () => {

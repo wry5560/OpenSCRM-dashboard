@@ -1,6 +1,4 @@
-import React, {useEffect, useState} from 'react';
-import {useLoadMore} from '@umijs/hooks';
-import type {FnParams} from '@umijs/hooks/es/useLoadMore';
+import React, {useEffect, useState, useCallback} from 'react';
 import styles from './index.less'
 import {DatePicker, Empty, Form, Image, Input, message, Row, Spin, Tabs, Typography} from 'antd'
 import {
@@ -17,12 +15,14 @@ import {useForm} from "antd/es/form/Form";
 import type {NewMsg} from "@/pages/StaffAdmin/ChatSession/components/MessageView";
 import MessageView, {msgTypeMap} from "@/pages/StaffAdmin/ChatSession/components/MessageView";
 import SearchMsgView from "@/pages/StaffAdmin/ChatSession/components/SearchMsgView";
-import moment from "moment";
-import {PageContainer} from '@ant-design/pro-layout';
+import dayjs from "dayjs";
+import {PageContainer} from '@ant-design/pro-components';
 import externalSvg from '@/assets/external.svg'
 import defaultImage from '@/assets/default-image.png'
 
 const {TabPane} = Tabs;
+
+const PAGE_SIZE = 20;
 
 const StaffSession: React.FC = (props: any) => {
     const [staffList, setStaffList] = useState<Staffs.Item[]>([])
@@ -42,6 +42,12 @@ const StaffSession: React.FC = (props: any) => {
     const [total, setTotal] = useState(0)
     const [msgSearchForm] = useForm()
     const [staffListForm] = useForm()
+
+    // 分页状态
+    const [page, setPage] = useState(1)
+    const [loading, setLoading] = useState(false)
+    const [loadingMore, setLoadingMore] = useState(false)
+    const [noMore, setNoMore] = useState(false)
 
     const queryStaffsList = (departmentIds?: number[], staffName?: string) => {
       // enable_msg_arch  1-开启会话存档   ext_department_id   0-所有部门
@@ -95,38 +101,72 @@ const StaffSession: React.FC = (props: any) => {
       })
     }
 
-    const queryChatMessages = (pageSize?: number, page?: number) => {
-      return QueryChatMessages({
-        page_size: pageSize,
-        page,
-        ext_staff_id: currentStaff?.ext_staff_id || 'none',
-        receiver_id: currentChatSession.peer_ext_id || 'none',
-        sort_type: 'desc',
-        sort_field: 'msg_time',
-        send_at_start: searchTime?.[0],
-        send_at_end: searchTime?.[1]
-      }).then(res => {
+    const queryChatMessages = useCallback(async (pageNum: number, reset = false) => {
+      if (reset) {
+        setLoading(true)
+      } else {
+        setLoadingMore(true)
+      }
+
+      try {
+        const res = await QueryChatMessages({
+          page_size: PAGE_SIZE,
+          page: pageNum,
+          ext_staff_id: currentStaff?.ext_staff_id || 'none',
+          receiver_id: currentChatSession.peer_ext_id || 'none',
+          sort_type: 'desc',
+          sort_field: 'msg_time',
+          send_at_start: searchTime?.[0],
+          send_at_end: searchTime?.[1]
+        });
+
         if (res?.code === 0) {
-          const resDataItems = res?.data?.items;
-          resDataItems?.reverse()
-          const newMsgList = resDataItems?.concat([...chatMessageList]).filter((m: any) => m !== null) || []
+          const resDataItems = res?.data?.items || [];
+          resDataItems?.reverse();
+
+          let newMsgList: NewMsg[];
+          if (reset) {
+            newMsgList = resDataItems.filter((m: any) => m !== null);
+          } else {
+            newMsgList = resDataItems.concat([...chatMessageList]).filter((m: any) => m !== null);
+          }
+
           newMsgList?.map((msg: any) => {
             return {...msg, showTime: false}
-          })
+          });
+
           for (let i = 0; i < newMsgList.length; i += 1) {
             if (Math.floor(Number(newMsgList[i]?.msgtime) / 10800 / 1000) !== Math.floor(Number(newMsgList[i + 1]?.msgtime) / 10800 / 1000)) {
               newMsgList[i].showTime = true
             }
           }
-          setChatMessageList(newMsgList || [])
-          setChatMessageListLoading(false)
-          setTotal(res?.data?.total)
-          return Promise.resolve({data: res?.data?.items || [], total: res?.data?.total})
+
+          setChatMessageList(newMsgList);
+          setChatMessageListLoading(false);
+          setTotal(res?.data?.total || 0);
+          setNoMore((reset ? resDataItems.length : chatMessageList.length + resDataItems.length) >= (res?.data?.total || 0));
+          setPage(pageNum);
+        } else {
+          message.error('聊天消息获取失败');
         }
-        message.error('聊天消息获取失败')
-        return Promise.reject(res?.message)
-      })
-    }
+      } finally {
+        setLoading(false);
+        setLoadingMore(false);
+      }
+    }, [currentStaff?.ext_staff_id, currentChatSession.peer_ext_id, searchTime, chatMessageList]);
+
+    const loadMore = useCallback(() => {
+      if (!loadingMore && !noMore) {
+        queryChatMessages(page + 1);
+      }
+    }, [queryChatMessages, loadingMore, noMore, page]);
+
+    const reload = useCallback(() => {
+      setChatMessageList([]);
+      setPage(1);
+      setNoMore(false);
+      queryChatMessages(1, true);
+    }, [queryChatMessages]);
 
     const getSearchMessages = (ext_staff_id: string, ext_peer_id: string, keyword: string) => {
       SearchMessages({ext_staff_id, ext_peer_id, keyword}).then(res => {
@@ -137,26 +177,6 @@ const StaffSession: React.FC = (props: any) => {
         }
       })
     }
-
-    const asyncFn = ({pageSize, page}: FnParams): Promise<{
-      total: number;
-      data: any[];
-    }> => {
-      return queryChatMessages(pageSize, page).then(res => {
-        return Promise.resolve({
-          total: res?.total,
-          data: res?.data
-        })
-      })
-    }
-
-    const {loading, loadingMore, reload, loadMore, noMore} = useLoadMore<any, any>(
-      asyncFn,
-      {
-        initPageSize: 20,
-        incrementSize: 20,
-      },
-    );
 
     useEffect(() => {
       queryStaffsList()
@@ -188,7 +208,9 @@ const StaffSession: React.FC = (props: any) => {
     }, [currentStaff])
 
     useEffect(() => {
-      reload()
+      if (currentChatSession?.peer_ext_id) {
+        reload()
+      }
     }, [currentChatSession])
 
     useEffect(() => {
@@ -245,7 +267,7 @@ const StaffSession: React.FC = (props: any) => {
                       <span style={{
                         color: 'rgba(0,0,0,.65)',
                         fontSize: '12px'
-                      }}>{moment(chatSession.msgtime).format('M月D日')}</span>
+                      }}>{dayjs(chatSession.msgtime).format('M月D日')}</span>
                         </div>
                       </div>
                       <div className={styles.sessionItemRightBottom} style={{width: 120}}>
@@ -388,7 +410,7 @@ const StaffSession: React.FC = (props: any) => {
                                      style={{margin: '0 10px', display: chatMessageList.length === 0 ? 'none' : 'block'}}>
                             <DatePicker.RangePicker style={{height: 31.333}}
                                                     disabled={msgSearchForm?.getFieldValue('msgKeyWord')?.length && showSearchMessageView}
-                                                    disabledDate={(current) => current && current > moment().endOf('day')}
+                                                    disabledDate={(current) => current && current > dayjs().endOf('day')}
                                                     onChange={(value, time) => {
                                                       if (time?.length === 2) {
                                                         setSearchTime(time)

@@ -1,10 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
+import {PageContainer, ProFormText, QueryFilter} from '@ant-design/pro-components';
 import type {FormInstance} from 'antd';
 import {Button, Col, Empty, Input, Modal, Row, Space, Spin, Tag, Tooltip} from 'antd';
 import {HandleRequest} from '@/utils/utils';
 import {DeleteOutlined, DragOutlined, EditOutlined, FolderFilled, PlusOutlined, SyncOutlined,} from '@ant-design/icons';
-import {ProFormText, QueryFilter} from '@ant-design/pro-form';
 import ProCard from '@ant-design/pro-card';
 import type {DepartmentOption} from '@/pages/StaffAdmin/Components/Modals/DepartmentSelectionModal';
 import {message} from 'antd/es';

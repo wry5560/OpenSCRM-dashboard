@@ -5,7 +5,7 @@ import {message} from 'antd';
 import {Button, Empty, Input, Row, Space, Tag, Modal} from 'antd';
 import styles from "./index.less";
 import {PlusOutlined, CloseOutlined} from "@ant-design/icons";
-import {ModalForm} from "@ant-design/pro-form";
+import {ModalForm} from "@ant-design/pro-components";
 import {InternalTags} from "@/pages/StaffAdmin/Customer/data";
 import {Dictionary} from "lodash";
 import {DeleteInternalTags, CreateInternalTag} from "@/pages/StaffAdmin/Customer/service";

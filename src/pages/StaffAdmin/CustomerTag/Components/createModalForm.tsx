@@ -1,11 +1,12 @@
 import type {Dispatch, SetStateAction} from 'react';
 import React, {useEffect, useRef, useState} from 'react';
-import ProForm, {
+import {
+  ProForm,
   ProFormDependency,
   ProFormList,
   ProFormRadio,
   ProFormText,
-} from '@ant-design/pro-form';
+} from '@ant-design/pro-components';
 import type {CustomerTagGroupItem} from '@/pages/StaffAdmin/CustomerTag/data';
 import {Disable, False, True} from '../../../../../config/constant';
 import type {FormInstance, ModalProps} from 'antd';

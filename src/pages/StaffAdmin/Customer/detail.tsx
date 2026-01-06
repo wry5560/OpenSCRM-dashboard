@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import {history} from 'umi';
+import type {ActionType, ProColumns} from '@ant-design/pro-components';
+import {PageContainer, ProTable} from '@ant-design/pro-components';
+import {history} from '@umijs/max';
 import {
   BookFilled,
   ClockCircleOutlined, ContactsFilled, EditFilled,
@@ -11,9 +12,7 @@ import {
 import ProCard from '@ant-design/pro-card';
 import {Button, Descriptions, Empty, Form, message, Space, Tag,} from 'antd';
 import styles from "@/pages/StaffAdmin/Customer/index.less";
-import type {ActionType, ProColumns} from "@ant-design/pro-table";
-import ProTable from "@ant-design/pro-table";
-import moment from "moment";
+import dayjs from "dayjs";
 import type {GroupChatItem} from "@/pages/StaffAdmin/GroupChat/data";
 import type {FormInstance} from "antd/es/form";
 import {ProTableRequestAdapter} from "@/utils/utils";
@@ -122,7 +121,7 @@ const columns: ProColumns<GroupChatItem>[] = [
       return (
         <div
           dangerouslySetInnerHTML={{
-            __html: moment(item.create_time).format('YYYY-MM-DD HH:mm').split(' ').join('<br/>'),
+            __html: dayjs(item.create_time).format('YYYY-MM-DD HH:mm').split(' ').join('<br/>'),
           }}
         />
       );
@@ -439,7 +438,7 @@ const CustomerDetail: React.FC = () => {
                         return (
                           <div className={styles.staffTag}
                                dangerouslySetInnerHTML={{
-                                 __html: moment(para.createtime)
+                                 __html: dayjs(para.createtime)
                                    .format('YYYY-MM-DD HH:mm')
                                    .split(' ')
                                    .join('<br />'),
@@ -452,7 +451,7 @@ const CustomerDetail: React.FC = () => {
                   <Descriptions.Item label="更新时间">
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: moment(customerDetail?.updated_at)
+                        __html: dayjs(customerDetail?.updated_at)
                           .format('YYYY-MM-DD HH:mm')
                           .split(' ')
                           .join('<br />'),

@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import type { FormInstance} from 'antd';
 import { Alert, Divider, Table } from 'antd';
-import ProForm, { ProFormRadio } from '@ant-design/pro-form';
+import type { ProFormProps } from '@ant-design/pro-components';
+import { ProForm, ProFormRadio, ProFormText } from '@ant-design/pro-components';
 import { False, True } from '../../../../../config/constant';
 import lodash from 'lodash';
 import styles from './index.less';
@@ -23,12 +24,38 @@ import {
   BizRole_Full,
   BizRole_Read, BizWelcomeMsg_Full, BizWelcomeMsg_Read,
 } from '../../../../../config/permission';
-import Icon, { createFromIconfontCN } from '@ant-design/icons';
+import Icon, {
+  createFromIconfontCN,
+  UsergroupAddOutlined,
+  QrcodeOutlined,
+  IdcardOutlined,
+  UsergroupDeleteOutlined,
+  TagsOutlined,
+  SafetyCertificateOutlined,
+  MessageOutlined,
+  TagOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import defaultSettings from '../../../../../config/defaultSettings';
 import { isImg, isUrl } from '@/utils/utils';
-import allIcons from '@@/plugin-antd-icon/icons';
-import type { ProFormProps } from '@ant-design/pro-form/lib/layouts/ProForm';
-import { ProFormText } from '@ant-design/pro-form/es';
+
+// Icon mapping for dynamic icon lookup
+const allIcons: Record<string, any> = {
+  UsergroupAdd: UsergroupAddOutlined,
+  UsergroupAddOutlined: UsergroupAddOutlined,
+  QrcodeOutlined: QrcodeOutlined,
+  IdcardOutlined: IdcardOutlined,
+  UsergroupDelete: UsergroupDeleteOutlined,
+  UsergroupDeleteOutlined: UsergroupDeleteOutlined,
+  Tags: TagsOutlined,
+  TagsOutlined: TagsOutlined,
+  SafetyCertificate: SafetyCertificateOutlined,
+  SafetyCertificateOutlined: SafetyCertificateOutlined,
+  MessageOutlined: MessageOutlined,
+  TagOutlined: TagOutlined,
+  User: UserOutlined,
+  UserOutlined: UserOutlined,
+};
 
 const IconFont = createFromIconfontCN({
   scriptUrl: defaultSettings.iconfontUrl,

@@ -3,29 +3,110 @@
  *
  * @see You can view component api by: https://github.com/ant-design/ant-design-pro-layout
  */
-import type {BasicLayoutProps as ProLayoutProps, MenuDataItem, Settings,} from '@ant-design/pro-layout';
-import ProLayout from '@ant-design/pro-layout';
-import React, {useMemo, useRef} from 'react';
-import type {Dispatch} from 'umi';
-import {connect, history, Link} from 'umi';
-import {Button, Result} from 'antd';
+import type { ProLayoutProps, MenuDataItem, ProSettings } from '@ant-design/pro-components';
+import { ProLayout } from '@ant-design/pro-components';
+import React, { useMemo, useRef } from 'react';
+import type { Dispatch } from '@umijs/max';
+import { connect, history, Link, Outlet, useLocation, useAppData } from '@umijs/max';
+import { Button, Result } from 'antd';
 import Authorized from '@/utils/Authorized';
-import type {ConnectState} from '@/models/connect';
-import {getMatchMenu} from '@umijs/route-utils';
+import type { ConnectState } from '@/models/connect';
+import { getMatchMenu } from '@umijs/route-utils';
 import logo from '../assets/logo.svg';
 import headerLogo from '../assets/logo_white.svg';
-import type {HeaderViewProps} from '@ant-design/pro-layout/lib/Header';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import Icon, {createFromIconfontCN} from '@ant-design/icons';
+import {
+  createFromIconfontCN,
+  HomeOutlined,
+  UsergroupAddOutlined,
+  UserOutlined,
+  SafetyCertificateOutlined,
+  QrcodeOutlined,
+  IdcardOutlined,
+  UsergroupDeleteOutlined,
+  TagsOutlined,
+  MessageOutlined,
+  TagOutlined,
+} from '@ant-design/icons';
 import defaultSettings from '../../config/defaultSettings';
-import {isImg, isUrl} from '@/utils/utils';
+import routes from '../../config/routes';
+
+// Ant Design 图标名称映射
+const antdIconMap: Record<string, React.ReactNode> = {
+  Home: <HomeOutlined />,
+  UsergroupAdd: <UsergroupAddOutlined />,
+  User: <UserOutlined />,
+  SafetyCertificate: <SafetyCertificateOutlined />,
+  QrcodeOutlined: <QrcodeOutlined />,
+  IdcardOutlined: <IdcardOutlined />,
+  UsergroupDelete: <UsergroupDeleteOutlined />,
+  Tags: <TagsOutlined />,
+  MessageOutlined: <MessageOutlined />,
+  TagOutlined: <TagOutlined />,
+};
+
+// 创建 IconFont 组件
+const IconFont = createFromIconfontCN({
+  scriptUrl: defaultSettings.iconfontUrl,
+});
+
+// 将字符串图标转换为 React 组件
+const convertIcon = (icon?: string): React.ReactNode => {
+  if (!icon || typeof icon !== 'string') return undefined;
+
+  // 检查是否为 Ant Design 内置图标
+  if (antdIconMap[icon]) {
+    return antdIconMap[icon];
+  }
+
+  // 检查是否为 iconfont 图标
+  if (icon.startsWith('icon-')) {
+    return <IconFont type={icon} />;
+  }
+
+  return undefined;
+};
+
+// 转换路由格式：routes -> children，过滤非菜单项，转换图标
+const transformRoutes = (routeList: any[]): any[] => {
+  return routeList
+    .filter((route) => route.name && !route.redirect) // 只保留有名称且非重定向的路由
+    .map((route) => ({
+      ...route,
+      icon: convertIcon(route.icon),
+      children: route.routes ? transformRoutes(route.routes) : undefined,
+      routes: undefined, // 移除 routes 属性
+    }));
+};
+
+// 从路由配置中提取 BasicLayout 对应的菜单路由
+const getBasicLayoutRoutes = () => {
+  const rootRoute = routes[0];
+  if (!rootRoute?.routes) return [];
+
+  // 找到 /staff-admin/ 下的 StaffAdminSecurityLayout
+  const staffAdminRoute = rootRoute.routes.find(
+    (r: any) => r.path === '/staff-admin/' && r.component?.includes('StaffAdminSecurityLayout')
+  );
+  if (!staffAdminRoute?.routes) return [];
+
+  // 找到 BasicLayout 的路由
+  const basicLayoutRoute = staffAdminRoute.routes.find(
+    (r: any) => r.component?.includes('BasicLayout')
+  );
+
+  const rawRoutes = basicLayoutRoute?.routes || [];
+  return transformRoutes(rawRoutes);
+};
+
+const basicLayoutRoutes = getBasicLayoutRoutes();
 
 export type BasicLayoutProps = {
   breadcrumbNameMap: Record<string, MenuDataItem>;
   route: ProLayoutProps['route'] & {
     authority: string[];
   };
-  settings: Settings;
+  settings: ProSettings;
   dispatch: Dispatch;
 } & ProLayoutProps;
 
@@ -44,33 +125,6 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
 
-const IconFont = createFromIconfontCN({
-  scriptUrl: defaultSettings.iconfontUrl,
-});
-
-// Allow menu.js config icon as string or ReactNode
-//   icon: 'setting',
-//   icon: 'icon-geren' #For Iconfont ,
-//   icon: 'http://demo.com/icon.png',
-//   icon: '/favicon.png',
-//   icon: <Icon type="setting" />,
-const getIcon = (
-  icon?: string | React.ReactNode,
-  iconPrefixes: string = 'icon-',
-): React.ReactNode => {
-  if (typeof icon === 'string' && icon !== '') {
-    if (isUrl(icon) || isImg(icon)) {
-      return (
-        <Icon component={() => <img src={icon} alt="icon" className="ant-pro-sider-menu-icon" />} />
-      );
-    }
-    if (icon.startsWith(iconPrefixes)) {
-      return <IconFont type={icon} />;
-    }
-  }
-  return icon;
-};
-
 // const defaultFooterDom = (
 //   // <DefaultFooter
 //   //   copyright={`${new Date().getFullYear()} OpenSCRM`}
@@ -84,12 +138,9 @@ const getIcon = (
 const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   const {
     dispatch,
-    children,
     settings,
-    location = {
-      pathname: '/',
-    },
   } = props;
+  const location = useLocation();
   const menuDataRef = useRef<MenuDataItem[]>([]);
 
   /** Init variables */
@@ -131,12 +182,27 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       logo={logo}
       {...props}
       {...settings}
+      route={{
+        path: '/staff-admin',
+        children: basicLayoutRoutes,
+      }}
+      location={location}
       onCollapse={handleMenuCollapse}
       layout={'mix'}
       navTheme={'light'}
-      headerTheme={'dark'}
       siderWidth={260}
       className={'main'}
+      token={{
+        header: {
+          colorBgHeader: '#001529',
+          colorHeaderTitle: '#fff',
+          colorTextMenu: '#dfdfdf',
+          colorTextMenuSecondary: '#dfdfdf',
+          colorTextMenuSelected: '#fff',
+          colorTextMenuActive: '#fff',
+          colorTextRightActionsItem: '#dfdfdf',
+        },
+      }}
       menu={{
         defaultOpenAll: true,
         type: 'sub',
@@ -150,30 +216,18 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
           </a>
         );
       }}
-      menuRender={(menuProps: HeaderViewProps, defaultDom: React.ReactNode) => {
+      menuRender={(_menuProps, defaultDom) => {
         return <div className={'sidebar-menu'}>{defaultDom}</div>;
       }}
       menuItemRender={(menuItemProps, defaultDom) => {
-        const isTopLevel = menuItemProps && menuItemProps?.pro_layout_parentKeys?.length === 0;
         if (
           menuItemProps.isUrl ||
           !menuItemProps.path ||
           location.pathname === menuItemProps.path
         ) {
-          return (
-            <div>
-              {!isTopLevel && getIcon(menuItemProps.icon)}
-              {defaultDom}
-            </div>
-          );
+          return defaultDom;
         }
-
-        return (
-          <Link to={menuItemProps.path}>
-            {!isTopLevel && getIcon(menuItemProps.icon)}
-            {defaultDom}
-          </Link>
-        );
+        return <Link to={menuItemProps.path}>{defaultDom}</Link>;
       }}
       // breadcrumbRender={(routers = []) => [
       //   {
@@ -198,7 +252,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       }}
     >
       <Authorized authority={authorized!.authority} noMatch={noMatch}>
-        {children}
+        <Outlet />
       </Authorized>
     </ProLayout>
   );

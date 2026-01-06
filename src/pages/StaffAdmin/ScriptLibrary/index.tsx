@@ -1,5 +1,5 @@
 import {PlusOutlined} from '@ant-design/icons';
-import {PageContainer} from '@ant-design/pro-layout';
+import {PageContainer} from '@ant-design/pro-components';
 import {Button} from 'antd';
 import React, {useRef} from 'react';
 import EnterpriseScript from './EnterpriseScript';

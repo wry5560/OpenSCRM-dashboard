@@ -3,12 +3,13 @@ import {GetDetail, QueryGroup} from '@/pages/StaffAdmin/ContactWay/service';
 import {message} from 'antd/es';
 import type {FormInstance} from 'antd';
 import {Alert, Badge, Button, Divider, Form, Row, Space, Tooltip, Typography} from 'antd';
-import {Link} from 'umi';
+import {Link} from '@umijs/max';
 import {CloseCircleOutlined, PlusOutlined} from '@ant-design/icons';
 import ProCard from '@ant-design/pro-card';
 import styles from './form.less';
-import type {ProFormProps} from '@ant-design/pro-form';
-import ProForm, {
+import type {ProFormProps} from '@ant-design/pro-components';
+import {
+  ProForm,
   ProFormDependency,
   ProFormDigit,
   ProFormList,
@@ -17,7 +18,7 @@ import ProForm, {
   ProFormSwitch,
   ProFormText,
   ProFormTimePicker,
-} from '@ant-design/pro-form';
+} from '@ant-design/pro-components';
 import {DateTimeLayout, Disable, Enable, False, TimeLayout, True} from '../../../../../config/constant';
 import type {StaffOption} from '../../Components/Modals/StaffTreeSelectionModal';
 import StaffTreeSelectionModal from '../../Components/Modals/StaffTreeSelectionModal';
@@ -29,7 +30,7 @@ import type {
   CreateContactWayParam,
   StaffParam,
 } from '@/pages/StaffAdmin/ContactWay/data';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import _ from 'lodash';
 import AutoReply from '@/pages/StaffAdmin/Components/Fields/AutoReply';
 import type {WelcomeMsg} from '@/pages/StaffAdmin/CustomerWelcomeMsg/data';
@@ -81,13 +82,13 @@ const defaultValues: CreateContactWayParam = {
   schedules: [
     {
       ext_staff_ids: [],
-      start_time: moment('09:00:00', TimeLayout),
-      end_time: moment('18:00:00', TimeLayout),
+      start_time: dayjs('09:00:00', TimeLayout),
+      end_time: dayjs('18:00:00', TimeLayout),
     },
   ],
   auto_skip_verify_enable: 2,
-  skip_verify_start_time: moment('09:00:00', TimeLayout),
-  skip_verify_end_time: moment('18:00:00', TimeLayout),
+  skip_verify_start_time: dayjs('09:00:00', TimeLayout),
+  skip_verify_end_time: dayjs('18:00:00', TimeLayout),
   staff_control_enable: false,
   nickname_block_enable: false,
   nickname_block_list: [],
@@ -158,8 +159,8 @@ const ContactWayForm: React.FC<ContactWayFormProps> = (props) => {
           ...schedule,
           ext_staff_ids: schedule?.staffs?.map((staff: any) => staff.ext_staff_id),
           weekdays: schedule?.weekdays?.map((day: string) => invertWeekdaysEnum[day]),
-          start_time: moment(schedule?.start_time, TimeLayout),
-          end_time: moment(schedule?.end_time, TimeLayout),
+          start_time: dayjs(schedule?.start_time, TimeLayout),
+          end_time: dayjs(schedule?.end_time, TimeLayout),
         };
       });
     }
@@ -181,8 +182,8 @@ const ContactWayForm: React.FC<ContactWayFormProps> = (props) => {
       values.customer_tag_ext_ids = [];
     }
 
-    values.skip_verify_start_time = moment(values.skip_verify_start_time, TimeLayout);
-    values.skip_verify_end_time = moment(values.skip_verify_end_time, TimeLayout);
+    values.skip_verify_start_time = dayjs(values.skip_verify_start_time, TimeLayout);
+    values.skip_verify_end_time = dayjs(values.skip_verify_end_time, TimeLayout);
 
     return values;
   };
@@ -266,13 +267,13 @@ const ContactWayForm: React.FC<ContactWayFormProps> = (props) => {
     }
 
     if (out.skip_verify_start_time) {
-      out.skip_verify_start_time = moment(out.skip_verify_start_time, 'HH:mm')
+      out.skip_verify_start_time = dayjs(out.skip_verify_start_time, 'HH:mm')
         .format('HH:mm:ss')
         .toString();
     }
 
     if (out.skip_verify_end_time) {
-      out.skip_verify_end_time = moment(out.skip_verify_end_time, 'HH:mm')
+      out.skip_verify_end_time = dayjs(out.skip_verify_end_time, 'HH:mm')
         .format('HH:mm:ss')
         .toString();
     }
@@ -284,8 +285,8 @@ const ContactWayForm: React.FC<ContactWayFormProps> = (props) => {
         const refScheduleStaffMap = _.keyBy(currentItem?.schedules[index]?.staffs, 'ext_staff_id');
         return {
           ...schedule,
-          end_time: moment(schedule.end_time, DateTimeLayout).format('HH:mm:ss').toString(),
-          start_time: moment(schedule.start_time, DateTimeLayout).format('HH:mm:ss').toString(),
+          end_time: dayjs(schedule.end_time, DateTimeLayout).format('HH:mm:ss').toString(),
+          start_time: dayjs(schedule.start_time, DateTimeLayout).format('HH:mm:ss').toString(),
           staffs: schedule.ext_staff_ids.map((ext_id: string) => {
             return {
               id: refScheduleStaffMap[ext_id]?.id ? refScheduleStaffMap[ext_id]?.id : '',

@@ -1,8 +1,8 @@
-/** Request 网络请求工具 更详细的 api 文档: https://github.com/umijs/umi-request */
-import { extend } from 'umi-request';
-import { notification } from 'antd';
-import { message } from 'antd/es';
-import { history } from '@@/core/history';
+/** Request 网络请求工具 */
+import { request as umiRequest } from '@umijs/max';
+import type { RequestConfig } from '@umijs/max';
+import { notification, message } from 'antd';
+import { history } from '@umijs/max';
 
 // http 状态码
 const statusMessage: Record<number, string> = {
@@ -33,60 +33,62 @@ const codeMessage: Record<number, string> = {
   20000004: '无权访问',
 };
 
-// 业务状态码统一处理器
-const bizCodeHandler = async (response: Response): Promise<Response> => {
-  // 非json响应直接返回，不判断业务状态码，也没有业务状态码
-  if (
-    !response.headers.has('content-type') ||
-    !response.headers.get('content-type')?.includes('application/json')
-  ) {
-    return response;
-  }
+// 请求配置 - 导出供 app.ts 使用
+export const requestConfig: RequestConfig = {
+  errorConfig: {
+    errorHandler: (error: any) => {
+      const { response } = error;
+      if (response && response.status) {
+        const errorText = statusMessage[response.status] || response.statusText;
+        const { status, url } = response;
+        notification.error({
+          message: `请求失败 ${status}: ${url}`,
+          description: errorText,
+        });
+      } else if (!response) {
+        notification.error({
+          description: '连接服务器失败',
+          message: '网络异常',
+        });
+      }
+    },
+  },
+  requestInterceptors: [
+    (config: any) => {
+      return { ...config, credentials: 'include' };
+    },
+  ],
+  responseInterceptors: [
+    async (response: any) => {
+      // 非json响应直接返回
+      if (
+        !response.headers.has('content-type') ||
+        !response.headers.get('content-type')?.includes('application/json')
+      ) {
+        return response;
+      }
 
-  const data = await response.clone().json();
-  if (data && data.code !== 0) {
-    if (codeMessage[data.code]) {
-      message.error(codeMessage[data.code]);
-    }
-    if (data && data.code === 10000887) {
-      history.push(`/staff-admin/login`);
-    }
-  }
+      const data = await response.clone().json();
+      if (data && data.code !== 0) {
+        if (codeMessage[data.code]) {
+          message.error(codeMessage[data.code]);
+        }
+        if (data && data.code === 10000887) {
+          history.push(`/staff-admin/login`);
+        }
+      }
 
-  return response;
+      return response;
+    },
+  ],
 };
 
-/**
- * @zh-CN 异常处理程序
- * @en-US Exception handler
- */
-const errorHandler = (error: { response: Response }): Response => {
-  const { response } = error;
-  if (response && response.status) {
-    const errorText = statusMessage[response.status] || response.statusText;
-    const { status, url } = response;
-    notification.error({
-      message: `请求失败 ${status}: ${url}`,
-      description: errorText,
-    });
-  } else if (!response) {
-    notification.error({
-      description: '连接服务器失败',
-      message: '网络异常',
-    });
-  }
-  return response;
+// 封装的请求方法
+const request = <T = any>(url: string, options?: any): Promise<T> => {
+  return umiRequest<T>(url, {
+    credentials: 'include',
+    ...options,
+  });
 };
-
-/**
- * @en-US Configure the default parameters for request
- * @zh-CN 配置request请求时的默认参数
- */
-const request = extend({
-  errorHandler, // default error handling
-  credentials: 'include', // Does the default request bring cookies
-});
-
-request.interceptors.response.use(bizCodeHandler);
 
 export default request;

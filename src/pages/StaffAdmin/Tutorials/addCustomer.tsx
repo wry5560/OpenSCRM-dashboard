@@ -1,5 +1,5 @@
 import React from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-components';
 import ProCard from '@ant-design/pro-card';
 
 const AddCustomerTutorial: React.FC = () => {

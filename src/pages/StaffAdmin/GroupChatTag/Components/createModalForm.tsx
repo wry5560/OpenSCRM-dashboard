@@ -1,7 +1,7 @@
 import type {Dispatch, SetStateAction} from 'react';
 import React, {useRef, useState} from 'react';
-import type {ModalFormProps} from '@ant-design/pro-form';
-import ProForm, {ProFormList, ProFormText,} from '@ant-design/pro-form';
+import type {ModalFormProps} from '@ant-design/pro-components';
+import {ProForm, ProFormList, ProFormText} from '@ant-design/pro-components';
 import type {GroupChatTagGroupItem} from '@/pages/StaffAdmin/GroupChatTag/data';
 import type {FormInstance} from 'antd';
 import {Modal, Tooltip} from 'antd';

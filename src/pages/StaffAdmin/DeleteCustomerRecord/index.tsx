@@ -1,9 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-components';
+import {ModalForm, PageContainer, ProForm, ProFormRadio, ProFormSwitch, ProTable} from '@ant-design/pro-components';
 import type {FormInstance} from 'antd';
 import {Alert, Button, message, Space} from 'antd';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import type {DeleteCustomerRecordNotifyRuleInterface} from '@/pages/StaffAdmin/DeleteCustomerRecord/service';
 import {
   ExportDeleteCustomerRecord,
@@ -13,11 +12,10 @@ import {
 } from '@/pages/StaffAdmin/DeleteCustomerRecord/service';
 import {HandleRequest, ProTableRequestAdapter} from '@/utils/utils';
 import styles from './index.less';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import type {DeleteCustomerRecordItem} from '@/pages/StaffAdmin/DeleteCustomerRecord/data';
 import {CloudDownloadOutlined, SettingOutlined} from '@ant-design/icons';
 import {False, True} from '../../../../config/constant';
-import ProForm, {ModalForm, ProFormRadio, ProFormSwitch} from '@ant-design/pro-form';
 import Text from 'antd/es/typography/Text';
 import StaffTreeSelect from '@/pages/StaffAdmin/Components/Fields/StaffTreeSelect';
 import type {SimpleStaffInterface} from '@/services/staff';
@@ -145,7 +143,7 @@ const DeleteCustomerRecordList: React.FC = () => {
         return (
           <div
             dangerouslySetInnerHTML={{
-              __html: moment(item.relation_delete_at)
+              __html: dayjs(item.relation_delete_at)
                 .format('YYYY-MM-DD HH:mm')
                 .split(' ')
                 .join('<br />'),
@@ -164,7 +162,7 @@ const DeleteCustomerRecordList: React.FC = () => {
         return (
           <div
             dangerouslySetInnerHTML={{
-              __html: moment(item.relation_create_at)
+              __html: dayjs(item.relation_create_at)
                 .format('YYYY-MM-DD HH:mm')
                 .split(' ')
                 .join('<br />'),

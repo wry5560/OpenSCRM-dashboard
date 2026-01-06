@@ -1,4 +1,4 @@
-import type { Effect, Reducer } from 'umi';
+import type { Effect, Reducer } from '@umijs/max';
 import type { StaffAdminInterface } from '@/services/staffAdmin';
 import { GetCurrentStaffAdmin } from '@/services/staffAdmin';
 import { setAuthority } from '@/utils/authority';

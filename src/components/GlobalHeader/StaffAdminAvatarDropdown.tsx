@@ -1,8 +1,8 @@
 import {LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import {Menu, Spin} from 'antd';
 import React from 'react';
-import type {ConnectProps} from 'umi';
-import {connect, history} from 'umi';
+import type {ConnectProps} from '@umijs/max';
+import {connect, history} from '@umijs/max';
 import type {ConnectState} from '@/models/connect';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';

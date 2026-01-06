@@ -9,7 +9,7 @@
 export default {
   dev: {
     '/api/': {
-      target: 'http://127.0.0.1:9001/',
+      target: 'http://127.0.0.1:9003/',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

@@ -1,11 +1,9 @@
 import {Alert, message, Result, Spin} from 'antd';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import styles from './index.less';
 import Title from 'antd/es/typography/Title';
 import Paragraph from 'antd/es/typography/Paragraph';
-// @ts-ignore
-import ScriptTag from 'react-script-tag';
 import type {GetStaffAdminLoginQrcodeResp} from '@/services/staffAdmin';
 import {GetStaffAdminLoginQrcode, StaffAdminForceLogin} from '@/services/staffAdmin';
 import {CodeOK} from '../../../../config/constant';
@@ -17,6 +15,19 @@ const QrcodeLogin: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState<string>();
   const [code, setCode] = useState<number>();
   const [status, setStatus] = useState<StatusType>('loading');
+
+  // Load external script dynamically
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://rescdn.qqmail.com/node/ww/wwopenmng/js/sso/wwLogin-1.0.0.js';
+    script.async = true;
+    script.onload = handleScriptLoad;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   const handleScriptLoad = () => {
     const sourceURL = new URLSearchParams(window.location.search).get('redirect') || window.location.href.replace(window.location.pathname, '/staff-admin/welcome')
     setStatus('loading');
@@ -102,13 +113,7 @@ const QrcodeLogin: React.FC = () => {
         </div>
       )}
 
-      <div id="qrcodeContainer" className={styles.qrcodeContainer}>
-        <ScriptTag
-          type="text/javascript"
-          src="https://rescdn.qqmail.com/node/ww/wwopenmng/js/sso/wwLogin-1.0.0.js"
-          onLoad={handleScriptLoad}
-        />
-      </div>
+      <div id="qrcodeContainer" className={styles.qrcodeContainer} />
     </div>
   );
 };

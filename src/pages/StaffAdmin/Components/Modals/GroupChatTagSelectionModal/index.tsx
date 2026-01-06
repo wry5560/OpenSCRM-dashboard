@@ -7,7 +7,7 @@ import styles from './index.less';
 import {PlusOutlined} from '@ant-design/icons';
 import {CreateTags} from '@/pages/StaffAdmin/GroupChatTag/service';
 import {message} from 'antd/es';
-import {ModalForm, ProFormDependency, ProFormRadio} from '@ant-design/pro-form';
+import {ModalForm, ProFormDependency, ProFormRadio} from '@ant-design/pro-components';
 
 export type FormParams = {
   logical_condition: 'or' | 'and' | 'none';

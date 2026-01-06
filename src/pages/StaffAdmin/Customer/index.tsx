@@ -1,12 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-components';
+import {FooterToolbar, PageContainer, ProTable} from '@ant-design/pro-components';
 import {Button, Divider} from 'antd';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import {ExportCustomer, QueryCustomer, UpdateCustomerTags} from '@/pages/StaffAdmin/Customer/service';
 import {HandleRequest, ProTableRequestAdapter} from '@/utils/utils';
 import styles from './index.less';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import type {CustomerItem} from '@/pages/StaffAdmin/Customer/data';
 import {CloudDownloadOutlined, SyncOutlined, TagOutlined} from '@ant-design/icons';
 import {message} from 'antd/es';
@@ -198,7 +197,7 @@ const CustomerList: React.FC = () => {
           return (
             <div className={styles.staffTag}
                  dangerouslySetInnerHTML={{
-                   __html: moment(staff_relation.createtime)
+                   __html: dayjs(staff_relation.createtime)
                      .format('YYYY-MM-DD HH:mm')
                      .split(' ')
                      .join('<br />'),
@@ -222,7 +221,7 @@ const CustomerList: React.FC = () => {
         return (
           <div
             dangerouslySetInnerHTML={{
-              __html: moment(item.updated_at)
+              __html: dayjs(item.updated_at)
                 .format('YYYY-MM-DD HH:mm')
                 .split(' ')
                 .join('<br />'),

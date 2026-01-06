@@ -19,10 +19,11 @@ export function getAuthority(str?: string): string | string[] {
   }
   // preview.pro.ant.design only do not use in your production.
   // preview.pro.ant.design Dedicated environment variable, please do not use it in your project.
-  if (!authority && ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site') {
+  if (!authority && typeof ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION !== 'undefined' && ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site') {
     return [StaffAdminAuthority];
   }
-  return authority;
+  // Return empty array instead of undefined to prevent blank page
+  return authority || [];
 }
 
 export function setAuthority(authority: string | string[]): void {

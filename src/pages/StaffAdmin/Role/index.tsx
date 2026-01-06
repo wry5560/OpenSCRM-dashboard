@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-components';
+import {ModalForm, PageContainer, ProFormSelect, ProTable} from '@ant-design/pro-components';
 import type {FormInstance} from 'antd';
 import {Button, Dropdown, Menu, Space, Tabs} from 'antd';
 import {MoreOutlined, PlusOutlined, PlusSquareFilled} from '@ant-design/icons';
@@ -12,11 +13,7 @@ import {AssignRoleToStaff, Query, QueryRoleStaff, Update} from '@/pages/StaffAdm
 import TabPane from '@ant-design/pro-card/es/components/TabPane';
 import Search from 'antd/es/input/Search';
 import type {StaffInterface} from '@/services/staff';
-import type {ProColumns} from '@ant-design/pro-table/es';
-import type {ActionType} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import {HandleRequest, ProTableRequestAdapter} from '@/utils/utils';
-import {ModalForm, ProFormSelect} from '@ant-design/pro-form';
 import RoleForm from '@/pages/StaffAdmin/Role/Components/form';
 import type {CommonResp} from '@/services/common';
 import {history} from '@@/core/history';

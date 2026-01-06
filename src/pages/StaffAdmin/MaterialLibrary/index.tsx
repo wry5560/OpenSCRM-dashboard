@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-components';
 import ProCard from '@ant-design/pro-card';
 import {Button, Switch, Radio, Space, message} from 'antd'
 import styles from './index.less'

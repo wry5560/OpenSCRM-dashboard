@@ -1,4 +1,4 @@
-import { Redirect, Route } from 'umi';
+import { Redirect, Route } from '@umijs/max';
 
 import React from 'react';
 import Authorized from './Authorized';

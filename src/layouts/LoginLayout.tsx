@@ -1,8 +1,8 @@
-import type { MenuDataItem } from '@ant-design/pro-layout';
-import { getMenuData, getPageTitle } from '@ant-design/pro-layout';
+import type { MenuDataItem } from '@ant-design/pro-components';
+import { getMenuData, getPageTitle } from '@ant-design/pro-components';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import type { ConnectProps } from 'umi';
-import { connect, Link } from 'umi';
+import type { ConnectProps } from '@umijs/max';
+import { connect, Link, Outlet, useLocation } from '@umijs/max';
 import React from 'react';
 import type { ConnectState } from '@/models/connect';
 import logo from '../assets/logo_black.svg';
@@ -19,12 +19,7 @@ const LoginLayout: React.FC<UserLayoutProps> = (props) => {
     },
   } = props;
   const { routes = [] } = route;
-  const {
-    children,
-    location = {
-      pathname: '',
-    },
-  } = props;
+  const location = useLocation();
   const { breadcrumb } = getMenuData(routes);
   const title = getPageTitle({
     pathname: location.pathname,
@@ -46,7 +41,7 @@ const LoginLayout: React.FC<UserLayoutProps> = (props) => {
               </Link>
             </div>
           </div>
-          {children}
+          <Outlet />
         </div>
       </div>
     </HelmetProvider>

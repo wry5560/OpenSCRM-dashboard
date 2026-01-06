@@ -1,15 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'; // useEffect,
-import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, Divider } from 'antd';
-import type { ActionType, ProColumns } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import {
   ExportCustomerGroupsList,
   QueryCustomerGroupsList,
   UpdateGroupChatTags,
 } from '@/pages/StaffAdmin/GroupChat/service';
 import { HandleRequest, ProTableRequestAdapter } from '@/utils/utils';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import type { GroupChatItem } from '@/pages/StaffAdmin/GroupChat/data';
 import { CloudDownloadOutlined, SyncOutlined, TagOutlined } from '@ant-design/icons';
 import { message } from 'antd/es';
@@ -185,7 +184,7 @@ const CustomerGroupsListList: React.FC = () => {
         return (
           <div
             dangerouslySetInnerHTML={{
-              __html: moment(item.create_time).format('YYYY-MM-DD HH:mm').split(' ').join('<br/>'),
+              __html: dayjs(item.create_time).format('YYYY-MM-DD HH:mm').split(' ').join('<br/>'),
             }}
           />
         );

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-components';
 import { message } from 'antd/es';
-import { history } from 'umi';
+import { history } from '@umijs/max';
 import { LeftOutlined } from '@ant-design/icons';
 import ProCard from '@ant-design/pro-card';
 import type { CommonResp } from '@/services/common';
@@ -55,7 +55,7 @@ const CreateCustomerWelcomeMsg: React.FC = () => {
 
   return (
     <PageContainer
-      onBack={() => history.goBack()}
+      onBack={() => history.back()}
       backIcon={<LeftOutlined />}
       header={{
         title: '修改欢迎语',

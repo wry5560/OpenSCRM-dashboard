@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Badge, Button, Divider, Form, message, Space } from 'antd';
-import ProForm, { ProFormText } from '@ant-design/pro-form';
+import type { ProFormProps } from '@ant-design/pro-components';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
 import type { CustomerWelcomeMsgItem, WelcomeMsg } from '@/pages/StaffAdmin/CustomerWelcomeMsg/data';
 import type { CreateCustomerWelcomeMsgParam } from '@/pages/StaffAdmin/CustomerWelcomeMsg/data';
-import type { ProFormProps } from '@ant-design/pro-form/lib/layouts/ProForm';
 import styles from '@/pages/StaffAdmin/ContactWay/Components/form.less';
 import { CloseCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import type { StaffOption } from '@/pages/StaffAdmin/Components/Modals/StaffTreeSelectionModal';
