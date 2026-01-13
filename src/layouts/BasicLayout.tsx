@@ -80,7 +80,8 @@ const transformRoutes = (routeList: any[]): any[] => {
 
 // 从路由配置中提取 BasicLayout 对应的菜单路由
 const getBasicLayoutRoutes = () => {
-  const rootRoute = routes[0];
+  // 找到 path 为 '/' 的根路由（主系统路由），而不是依赖数组索引
+  const rootRoute = routes.find((r: any) => r.path === '/');
   if (!rootRoute?.routes) return [];
 
   // 找到 /staff-admin/ 下的 StaffAdminSecurityLayout

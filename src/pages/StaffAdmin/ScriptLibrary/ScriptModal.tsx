@@ -116,9 +116,9 @@ const ScriptModal: (props: ScriptModalProps, ref: any) => JSX.Element = (props, 
       if (typeObjectKey === 'image') {
         const quickReplyContent = {
           image: {
-            'title': item.image_title,
-            'size': item.image_size,
-            'picurl': item.image_picurl
+            'title': item.image_title || '',
+            'size': item.image_size || '',
+            'picurl': typeof item.image_picurl === 'string' ? item.image_picurl : ''
           }
         }
         replyDetailItem.quick_reply_content = quickReplyContent
@@ -127,10 +127,10 @@ const ScriptModal: (props: ScriptModalProps, ref: any) => JSX.Element = (props, 
       if (typeObjectKey === 'link') {
         const quickReplyContent = {
           link: {
-            'title': item.link_title,
-            'picurl': item.link_picurl,
-            'desc': item.link_desc,
-            'url': item.link_url
+            'title': item.link_title || '',
+            'picurl': typeof item.link_picurl === 'string' ? item.link_picurl : '',
+            'desc': item.link_desc || '',
+            'url': item.link_url || ''
           }
         }
         replyDetailItem.quick_reply_content = quickReplyContent
@@ -139,9 +139,9 @@ const ScriptModal: (props: ScriptModalProps, ref: any) => JSX.Element = (props, 
       if (typeObjectKey === 'pdf') {
         const quickReplyContent = {
           pdf: {
-            'title': item.pdf_title,
-            'size': item.pdf_size,
-            'fileurl': item.pdf_fileurl
+            'title': item.pdf_title || '',
+            'size': item.pdf_size || '',
+            'fileurl': typeof item.pdf_fileurl === 'string' ? item.pdf_fileurl : ''
           }
         }
         replyDetailItem.quick_reply_content = quickReplyContent
@@ -150,9 +150,9 @@ const ScriptModal: (props: ScriptModalProps, ref: any) => JSX.Element = (props, 
       if (typeObjectKey === 'video') {
         const quickReplyContent = {
           video: {
-            'title': item.video_title,
-            'size': item.video_size,
-            'picurl': item.video_picurl
+            'title': item.video_title || '',
+            'size': item.video_size || '',
+            'picurl': typeof item.video_picurl === 'string' ? item.video_picurl : ''
           }
         }
         replyDetailItem.quick_reply_content = quickReplyContent

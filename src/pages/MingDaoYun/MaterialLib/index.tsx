@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Switch, Radio, Space, message } from 'antd';
-import { LogoutOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import Material from '@/pages/StaffAdmin/MaterialLibrary/Material/index';
 import TagModal from '@/pages/StaffAdmin/MaterialLibrary/components/TagModal/index';
@@ -8,6 +7,7 @@ import TagProvider, { TagContext } from '@/pages/StaffAdmin/MaterialLibrary/TagP
 import { getMaterialSidebarStatus, updateMaterialSidebarStatus } from '@/pages/StaffAdmin/MaterialLibrary/service';
 import { StaffAdminLogout } from './service';
 import { LSExtStaffAdminID } from '../../../../config/constant';
+import UserAvatar from '../components/UserAvatar';
 
 const MingDaoYunMaterialLib: React.FC = () => {
   const [currentType, setCurrentType] = React.useState('链接');
@@ -48,14 +48,7 @@ const MingDaoYunMaterialLib: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.pageHeader}>
           <h2 className={styles.pageTitle}>素材库</h2>
-          <Button
-            type="link"
-            icon={<LogoutOutlined />}
-            onClick={handleLogout}
-            className={styles.logoutBtn}
-          >
-            退出登录
-          </Button>
+          <UserAvatar onLogout={handleLogout} />
         </div>
 
         <div className={styles.filterHeader}>

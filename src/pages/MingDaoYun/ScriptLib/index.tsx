@@ -1,10 +1,11 @@
 import React, { useRef } from 'react';
 import { Button } from 'antd';
-import { PlusOutlined, LogoutOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import EnterpriseScript from '@/pages/StaffAdmin/ScriptLibrary/EnterpriseScript';
 import { StaffAdminLogout } from './service';
 import { LSExtStaffAdminID } from '../../../../config/constant';
+import UserAvatar from '../components/UserAvatar';
 
 const MingDaoYunScriptLib: React.FC = () => {
   const enterpriseScriptRef = useRef<any>({});
@@ -34,14 +35,7 @@ const MingDaoYunScriptLib: React.FC = () => {
           >
             新建话术
           </Button>
-          <Button
-            type="link"
-            icon={<LogoutOutlined />}
-            onClick={handleLogout}
-            className={styles.logoutBtn}
-          >
-            退出登录
-          </Button>
+          <UserAvatar onLogout={handleLogout} />
         </div>
       </div>
 
