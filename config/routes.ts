@@ -37,6 +37,11 @@ export default [
         path: '/mingdaoyun/login-callback',
         component: './MingDaoYun/Login/callback',
       },
+      // 明道云二维码展示页面（iframe 嵌入，无需登录）
+      {
+        path: '/mingdaoyun/qrcode',
+        component: './MingDaoYun/QRCode/index',
+      },
       // 需要登录的页面
       {
         path: '/mingdaoyun/',
