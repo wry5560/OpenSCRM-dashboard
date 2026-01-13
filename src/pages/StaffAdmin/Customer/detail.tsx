@@ -10,7 +10,7 @@ import {
   RightOutlined, SoundFilled,
 } from '@ant-design/icons';
 import ProCard from '@ant-design/pro-card';
-import {Button, Descriptions, Empty, Form, message, Space, Tag,} from 'antd';
+import {Alert, Button, Descriptions, Empty, Form, message, Space, Tag, Tooltip,} from 'antd';
 import styles from "@/pages/StaffAdmin/Customer/index.less";
 import dayjs from "dayjs";
 import type {GroupChatItem} from "@/pages/StaffAdmin/GroupChat/data";
@@ -149,6 +149,7 @@ const CustomerDetail: React.FC = () => {
   const [remarkValues, setRemarkValues] = useState<Remark[]>([])
   const [reloadCusDataTimesTamp, setReloadCusDataTimesTamp] = useState(Date.now)
   const [formRef] = Form.useForm()
+  const [isMyCustomer, setIsMyCustomer] = useState<boolean>(false) // 当前员工是否是该客户的归属员工
 
   const params = new URLSearchParams(window.location.search);
   const currentStaff = localStorage.getItem('extStaffAdminID') as string
@@ -180,8 +181,10 @@ const CustomerDetail: React.FC = () => {
       setCustomerDetail(res?.data);
       const cusTags: any[] = [];
       const interTagsIds: any[] = []
+      let hasRelation = false; // 检查当前员工是否与该客户有关系
       res?.data?.staff_relations?.forEach((relation: any) => {
         if (relation.ext_staff_id === currentStaff) {
+          hasRelation = true;
           relation.customer_staff_tags?.forEach((tag: any) => {
             cusTags.push({...tag, name: tag.tag_name, ext_id: tag.ext_tag_id});
           });
@@ -191,6 +194,7 @@ const CustomerDetail: React.FC = () => {
         }
 
       });
+      setIsMyCustomer(hasRelation);
       setDefaultCustomerTags(cusTags)
       setDefaultInternalTagsIds(interTagsIds)
     }).catch(() => {
@@ -258,11 +262,18 @@ const CustomerDetail: React.FC = () => {
   }
 
   const updateBasicInfoAndRemark = (basicInfoParams: any) => {
-    UpdateBasicInfoAndRemark({
+    // 将 age 字段转换为整数类型
+    const params = {
       ext_staff_id: currentStaff,
       ext_customer_id: extCustomerID,
       ...basicInfoParams
-    }).then(res => {
+    };
+    if (params.age !== undefined && params.age !== null && params.age !== '') {
+      params.age = parseInt(params.age, 10) || 0;
+    } else {
+      delete params.age;
+    }
+    UpdateBasicInfoAndRemark(params).then(res => {
       if (res?.code === 0) {
         message.success('客户信息更新成功')
         setReloadCusDataTimesTamp(Date.now)
@@ -354,56 +365,64 @@ const CustomerDetail: React.FC = () => {
             <div style={{width: 70, display: 'inline-block'}}>企业标签：</div>
             <div className={styles.tagContainer}>
               <Space direction={'horizontal'} wrap={true}>
-                {
-                  defaultCustomerTags?.length > 0 && defaultCustomerTags?.map((tag) =>
+                {isMyCustomer ? (
+                  defaultCustomerTags?.length > 0 ? defaultCustomerTags?.map((tag) =>
                     <Tag
                       key={tag?.id}
                       className={'tag-item selected-tag-item'}
                     >
                       {tag?.name}
                     </Tag>
-                  )}
+                  ) : <span style={{color: '#999', fontSize: 12}}>暂无标签</span>
+                ) : (
+                  <span style={{color: '#999', fontSize: 12}}>该客户非您的专属客户，无法查看标签</span>
+                )}
               </Space>
             </div>
-            <Button
-              key='addCusTags'
-              icon={<EditOutlined/>}
-              type={'link'}
-              onClick={() => {
-                setCustomerTagModalVisible(true);
-              }}
-            >
-              编辑
-            </Button>
+            {isMyCustomer && (
+              <Button
+                key='addCusTags'
+                icon={<EditOutlined/>}
+                type={'link'}
+                onClick={() => {
+                  setCustomerTagModalVisible(true);
+                }}
+              >
+                编辑
+              </Button>
+            )}
           </div>
 
           <div>
             <div style={{width: 70, display: 'inline-block'}}>个人标签：</div>
             <div className={styles.tagContainer}>
               <Space direction={'horizontal'} wrap={true}>
-                {
-                  defaultInternalTagsIds?.length > 0 && defaultInternalTagsIds.map(id => internalTagListMap[id])?.map((tag) =>
+                {isMyCustomer ? (
+                  defaultInternalTagsIds?.length > 0 ? defaultInternalTagsIds.map(id => internalTagListMap[id])?.map((tag) =>
                     <Tag
                       key={tag?.id}
                       className={'tag-item selected-tag-item'}
                     >
                       {tag?.name}
-                      <span>
-                     </span>
                     </Tag>
-                  )}
+                  ) : <span style={{color: '#999', fontSize: 12}}>暂无标签</span>
+                ) : (
+                  <span style={{color: '#999', fontSize: 12}}>该客户非您的专属客户，无法查看标签</span>
+                )}
               </Space>
             </div>
-            <Button
-              key='addInternalTags'
-              icon={<EditOutlined/>}
-              type={'link'}
-              onClick={() => {
-                setPersonalTagModalVisible(true);
-              }}
-            >
-              编辑
-            </Button>
+            {isMyCustomer && (
+              <Button
+                key='addInternalTags'
+                icon={<EditOutlined/>}
+                type={'link'}
+                onClick={() => {
+                  setPersonalTagModalVisible(true);
+                }}
+              >
+                编辑
+              </Button>
+            )}
           </div>
         </Descriptions>
       </ProCard>
@@ -521,14 +540,14 @@ const CustomerDetail: React.FC = () => {
                 <a onClick={() => setCurrentTab('events')} style={{fontSize: 12}}>查看更多<RightOutlined/></a>
               </div>
               <Events data={initialEvents.filter(elem => elem !== null)} simpleRender={true} staffMap={staffMap}
-                      extCustomerID={extCustomerID}/>
+                      extCustomerID={extCustomerID} isMyCustomer={isMyCustomer}/>
             </div>
           </div>
 
         </ProCard.TabPane>
 
         <ProCard.TabPane key="events" tab="客户动态">
-          <Events staffMap={staffMap} extCustomerID={extCustomerID}/>
+          <Events staffMap={staffMap} extCustomerID={extCustomerID} isMyCustomer={isMyCustomer}/>
         </ProCard.TabPane>
 
         <ProCard.TabPane key="room" tab="所在群聊">
@@ -544,6 +563,7 @@ const CustomerDetail: React.FC = () => {
             bordered={false}
             tableAlertRender={false}
             dateFormatter="string"
+            params={{ext_customer_id: extCustomerID}}
             request={async (originParams: any, sort, filter) => {
               return ProTableRequestAdapter(
                 originParams,
@@ -557,7 +577,7 @@ const CustomerDetail: React.FC = () => {
 
         <ProCard.TabPane key="chat" tab="聊天记录">
           {
-            setStaffMap[currentStaff]?.enable_msg_arch === 1 ? <Button
+            staffMap[currentStaff]?.enable_msg_arch === 1 ? <Button
                 key={'chatSession'}
                 type={"link"}
                 icon={<ClockCircleOutlined style={{fontSize: 16, verticalAlign: '-3px'}}/>}

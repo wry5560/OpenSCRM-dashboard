@@ -15,6 +15,7 @@ interface EventsProps {
   simpleRender?: boolean;
   staffMap: Dictionary<StaffOption>;
   extCustomerID: string;
+  isMyCustomer?: boolean; // 是否是当前员工的专属客户
 }
 
 const customerEventType = {
@@ -31,7 +32,7 @@ const customerEventType = {
 const PAGE_SIZE = 20;
 
 const Events: React.FC<EventsProps> = (props) => {
-  const {simpleRender, data, extCustomerID} = props
+  const {simpleRender, data, extCustomerID, isMyCustomer = true} = props
   const [currentType, setCurrentType] = useState('')
   const [groupData, setGroupData] = useState({} as any)
   const [eventsList, setEventsList] = useState<CustomerEvents.Item[]>([])
@@ -172,7 +173,18 @@ const Events: React.FC<EventsProps> = (props) => {
       }
     </Spin>
     {
-      !simpleRender && eventsList?.length === 0 && !eventListLoading && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+      !simpleRender && eventsList?.length === 0 && !eventListLoading && (
+        isMyCustomer
+          ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无动态记录"/>
+          : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="该客户非您的专属客户，无法查看动态"/>
+      )
+    }
+    {
+      simpleRender && (!data || data.length === 0) && (
+        isMyCustomer
+          ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无动态记录"/>
+          : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="该客户非您的专属客户，无法查看动态"/>
+      )
     }
   </div>
 

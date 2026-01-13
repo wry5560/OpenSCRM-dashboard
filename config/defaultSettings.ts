@@ -13,7 +13,7 @@ const proSettings: DefaultSettings = {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'OpenSCRM',
+  title: '极星SCRM',
   pwa: false,
   iconfontUrl: '//at.alicdn.com/t/font_2664214_7d8mhwhp1uv.js',
 };

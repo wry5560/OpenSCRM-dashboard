@@ -290,7 +290,7 @@ const Welcome: React.FC<WelcomeProps> = (props) => {
               <div>
                 <Typography.Paragraph style={{marginBottom: 6}}>
                   <Typography.Text style={{color: '#6b7a88'}}>企业名称：</Typography.Text>
-                  <Typography.Text>成都小橘科技有限公司</Typography.Text>
+                  <Typography.Text>上海斗浪信息科技有限公司</Typography.Text>
                 </Typography.Paragraph>
                 <Typography.Paragraph style={{marginBottom: 0}}>
                   <Typography.Text style={{color: '#6b7a88'}}>员工总数：</Typography.Text>
@@ -412,7 +412,7 @@ const Welcome: React.FC<WelcomeProps> = (props) => {
 
             <ProCard.Group hidden={!showSidebar} colSpan={'300px'} style={{padding: '0 4px'}} ghost={true}
                            direction={'column'}>
-              <ProCard title={<h4 style={{fontSize: 15}}>OpenSCRM开源私域流量管理系统</h4>} bordered={true}
+              <ProCard title={<h4 style={{fontSize: 15}}>极星SCRM私域流量管理系统</h4>} bordered={true}
                        bodyStyle={{paddingTop: 10}}>
                 <Row gutter={2}>
                   <Col span={12}>

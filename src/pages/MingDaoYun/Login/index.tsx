@@ -1,0 +1,125 @@
+import { Alert, message, Result, Spin } from 'antd';
+import React, { useState, useEffect } from 'react';
+import styles from './index.less';
+import Title from 'antd/es/typography/Title';
+import Paragraph from 'antd/es/typography/Paragraph';
+import type { GetStaffAdminLoginQrcodeResp } from '@/services/staffAdmin';
+import { GetStaffAdminLoginQrcode, StaffAdminForceLogin } from '@/services/staffAdmin';
+import { CodeOK } from '../../../../config/constant';
+import type { CommonResp } from '@/services/common';
+
+export type StatusType = 'loading' | 'failed' | 'success' | '';
+
+const MingDaoYunLogin: React.FC = () => {
+  const [alertMessage, setAlertMessage] = useState<string>();
+  const [code, setCode] = useState<number>();
+  const [status, setStatus] = useState<StatusType>('loading');
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://rescdn.qqmail.com/node/ww/wwopenmng/js/sso/wwLogin-1.0.0.js';
+    script.async = true;
+    script.onload = handleScriptLoad;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const handleScriptLoad = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectParam = urlParams.get('redirect') || '/mingdaoyun/material-lib';
+    // 确保是完整 URL，用于后端构建 OAuth 回调地址
+    const redirectUrl = redirectParam.startsWith('http')
+      ? redirectParam
+      : `${window.location.origin}${redirectParam}`;
+
+    setStatus('loading');
+    GetStaffAdminLoginQrcode('', redirectUrl)
+      .then((res: CommonResp) => {
+        if (res.code !== 0) {
+          setAlertMessage(res.message);
+          setCode(res.code);
+          setStatus('failed');
+          return;
+        }
+        const params = res.data as GetStaffAdminLoginQrcodeResp;
+        // @ts-ignore
+        window.WwLogin({
+          id: 'qrcodeContainer',
+          appid: params.app_id,
+          agentid: params.agent_id,
+          redirect_uri: params.redirect_uri,
+          state: params.state,
+          href: 'https://openscrm.oss-cn-hangzhou.aliyuncs.com/public/qrcode.css',
+        });
+        setStatus('success');
+      })
+      .catch((err) => {
+        console.log(err);
+        setStatus('failed');
+      });
+
+    // 开发环境自动登录
+    if (
+      window.location.href.includes('demo') ||
+      window.location.href.includes('localhost') ||
+      window.location.href.includes('127.0.0.1') ||
+      window.location.search.includes('debug')
+    ) {
+      message.info('开发演示环境无需扫码登录，3秒后自动登录', 3000);
+      setTimeout(() => {
+        StaffAdminForceLogin()
+          .then((res: CommonResp) => {
+            if (res.code !== 0) {
+              message.error(res.message);
+              return;
+            }
+            window.location.href = redirectParam;
+          })
+          .catch((err) => {
+            message.error('自动登录失败');
+            console.log('err', err);
+          });
+      }, 3000);
+    }
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.main}>
+        <div className={styles.header}>
+          <Title
+            level={1}
+            className={styles.title}
+            style={{ fontWeight: 500, fontSize: '28px', marginBottom: '8px' }}
+          >
+            企业微信扫码登录
+          </Title>
+          <Paragraph className={styles.desc}>明道云素材中心</Paragraph>
+        </div>
+        {code !== CodeOK && alertMessage && (
+          <Alert
+            style={{ marginTop: 12 }}
+            message={alertMessage}
+            type="error"
+            showIcon
+          />
+        )}
+        {status === 'loading' && (
+          <div className={styles.placeholder}>
+            <Spin size={'large'} />
+          </div>
+        )}
+        {status === 'failed' && (
+          <div className={styles.placeholder}>
+            <Result status={'warning'} title="系统错误" subTitle="请联系管理员" />
+          </div>
+        )}
+        <div id="qrcodeContainer" className={styles.qrcodeContainer} />
+      </div>
+    </div>
+  );
+};
+
+export default MingDaoYunLogin;

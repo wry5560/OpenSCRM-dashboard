@@ -12,8 +12,7 @@ import { Button, Result } from 'antd';
 import Authorized from '@/utils/Authorized';
 import type { ConnectState } from '@/models/connect';
 import { getMatchMenu } from '@umijs/route-utils';
-import logo from '../assets/logo.svg';
-import headerLogo from '../assets/logo_white.svg';
+import logoPng from '../assets/logo.png';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import {
   createFromIconfontCN,
@@ -179,7 +178,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
 
   return (
     <ProLayout
-      logo={logo}
+      logo={logoPng}
       {...props}
       {...settings}
       route={{
@@ -208,11 +207,12 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
         type: 'sub',
         ignoreFlatMenu: true,
       }}
-      onMenuHeaderClick={() => history.push('/')}
+      onMenuHeaderClick={(e) => e?.preventDefault()}
       headerTitleRender={() => {
         return (
-          <a onClick={() => history.push('/')}>
-            <img src={headerLogo} height={32} alt={'OpenSCRM'} />
+          <a style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'default' }}>
+            <img src={logoPng} height={32} alt={'极星SCRM'} />
+            <span style={{ color: '#fff', fontSize: '18px', fontWeight: 500 }}>极星SCRM</span>
           </a>
         );
       }}

@@ -5,7 +5,7 @@ import type { ConnectProps } from '@umijs/max';
 import { connect, Link, Outlet, useLocation } from '@umijs/max';
 import React from 'react';
 import type { ConnectState } from '@/models/connect';
-import logo from '../assets/logo_black.svg';
+import logoPng from '../assets/logo.png';
 import styles from './LoginLayout.less';
 
 export type UserLayoutProps = {
@@ -36,8 +36,9 @@ const LoginLayout: React.FC<UserLayoutProps> = (props) => {
         <div className={styles.content}>
           <div className={styles.top}>
             <div className={styles.header}>
-              <Link to="/">
-                <img alt="logo" className={styles.logo} src={logo} />
+              <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <img alt="logo" className={styles.logo} src={logoPng} />
+                <span style={{ fontSize: '24px', fontWeight: 500, color: '#1890ff' }}>极星SCRM</span>
               </Link>
             </div>
           </div>

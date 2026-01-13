@@ -1,6 +1,6 @@
 {
-  "name": "OpenSCRM",
-  "short_name": "OpenSCRM",
+  "name": "极星SCRM",
+  "short_name": "极星SCRM",
   "display": "standalone",
   "start_url": "./?utm_source=homescreen",
   "theme_color": "#002140",

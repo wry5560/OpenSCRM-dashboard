@@ -22,6 +22,38 @@
 } from './permission';
 
 export default [
+  // 明道云嵌入页面路由（独立于主系统）
+  {
+    path: '/mingdaoyun',
+    component: '../layouts/BlankLayout',
+    routes: [
+      // 明道云登录页
+      {
+        path: '/mingdaoyun/login',
+        component: './MingDaoYun/Login/index',
+      },
+      // 明道云登录回调
+      {
+        path: '/mingdaoyun/login-callback',
+        component: './MingDaoYun/Login/callback',
+      },
+      // 需要登录的页面
+      {
+        path: '/mingdaoyun/',
+        component: '../layouts/MingDaoYunSecurityLayout',
+        routes: [
+          {
+            path: '/mingdaoyun/material-lib',
+            component: './MingDaoYun/MaterialLib/index',
+          },
+          {
+            path: '/mingdaoyun/script-lib',
+            component: './MingDaoYun/ScriptLib/index',
+          },
+        ],
+      },
+    ],
+  },
   {
     path: '/',
     component: '../layouts/BlankLayout',

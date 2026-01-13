@@ -63,4 +63,7 @@ export default defineConfig({
   codeSplitting: {
     jsStrategy: 'granularChunks',
   },
+
+  // 修复 esbuild helpers 冲突
+  esbuildMinifyIIFE: true,
 });

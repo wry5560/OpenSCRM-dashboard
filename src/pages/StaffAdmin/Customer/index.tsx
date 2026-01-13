@@ -364,7 +364,8 @@ const CustomerList: React.FC = () => {
         rowKey='id'
         pagination={{
           pageSizeOptions: ['5', '10', '20', '50', '100'],
-          pageSize: 5,
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
         toolBarRender={false}
         bordered={false}

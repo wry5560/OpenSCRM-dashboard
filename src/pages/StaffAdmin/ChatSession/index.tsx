@@ -299,7 +299,7 @@ const StaffSession: React.FC = (props: any) => {
         <PageContainer
           header={{
             title: '消息存档',
-            subTitle: <Typography.Text>会话存档为独立服务，请单独部署 https://github.com/openscrm/msg-server</Typography.Text>
+            subTitle: <Typography.Text type="secondary">需要额外开启</Typography.Text>
           }}
         />
         <div className={styles.staffSession}>

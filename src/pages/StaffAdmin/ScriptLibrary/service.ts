@@ -107,9 +107,9 @@ export async function UpdateEnterpriseScriptList(params: Script.Item) {
   });
 }
 
-// 获取部门列表
+// 获取部门列表（使用无权限校验的接口）
 export async function QueryDepartmentList(params?: QueryDepartmentParams) {
-  return request(`${StaffAdminApiPrefix}/departments`, {
+  return request(`${StaffAdminApiPrefix}/quick-reply/departments`, {
     params,
   });
 }

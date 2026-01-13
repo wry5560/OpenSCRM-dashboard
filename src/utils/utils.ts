@@ -107,10 +107,13 @@ export const ProTableRequestAdapter = async (
     page_size: params.pageSize,
   });
 
-  if (sort && Object.keys(sort)) {
+  if (sort && Object.keys(sort).length > 0) {
     Object.keys(sort).forEach((key) => {
-      formattedParams.sort_field = key;
-      formattedParams.sort_type = sort[key] === 'ascend' ? 'asc' : 'desc';
+      // 只有当 key 是有效的字段名时才设置排序
+      if (key && key !== 'undefined' && key !== 'null') {
+        formattedParams.sort_field = key;
+        formattedParams.sort_type = sort[key] === 'ascend' ? 'asc' : 'desc';
+      }
     });
   }
 

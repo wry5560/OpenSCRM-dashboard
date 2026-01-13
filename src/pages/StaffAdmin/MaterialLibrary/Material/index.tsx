@@ -408,6 +408,11 @@ const Material: React.FC<MaterialProps> = (props) => {
                     <Form.Item
                       label='链接封面'
                       name='file_url'
+                      // 从 Uploader 组件获取值时，直接返回 value（字符串），而不是 Upload 事件对象
+                      getValueFromEvent={(e) => {
+                        if (typeof e === 'string') return e;
+                        return e?.file?.response || e?.fileList?.[0]?.response || '';
+                      }}
                       rules={[
                         {
                           required: true,
@@ -425,6 +430,7 @@ const Material: React.FC<MaterialProps> = (props) => {
                             const getUploadUrlRes = await GetSignedUrl({file_name: file.name})
                             if (getUploadUrlRes.code !== 0) {
                               message.error('获取上传地址失败');
+                              req.onError?.(new Error('获取上传地址失败'));
                               return;
                             }
                             // 上传
@@ -433,16 +439,21 @@ const Material: React.FC<MaterialProps> = (props) => {
                               body: file
                             });
                             if (uploadRes.clone().ok) {
+                              const downloadUrl = getUploadUrlRes?.data?.download_url;
+                              // 调用 onSuccess 并传递 URL，让 Form.Item 的 getValueFromEvent 能获取到
+                              req.onSuccess?.(downloadUrl);
                               modalFormRef?.current?.setFieldsValue({
-                                file_url: getUploadUrlRes?.data?.download_url,
+                                file_url: downloadUrl,
                                 file_size: String(file.size)
                               })
                               return;
                             }
                             message.error('上传图片失败');
+                            req.onError?.(new Error('上传图片失败'));
                             return;
                           } catch (e) {
                             message.error('上传图片失败');
+                            req.onError?.(e as Error);
                           }
                         }}
                       />
@@ -459,6 +470,10 @@ const Material: React.FC<MaterialProps> = (props) => {
                   <h2 className='dialog-title'> {targetUpdateMaterial.id ? '修改海报' : '添加海报'} </h2>
                   <ProForm.Item
                     name='file_url'
+                    getValueFromEvent={(e) => {
+                      if (typeof e === 'string') return e;
+                      return e?.file?.response || e?.fileList?.[0]?.response || '';
+                    }}
                   >
                     <Uploader
                       fileType='海报'
@@ -470,6 +485,7 @@ const Material: React.FC<MaterialProps> = (props) => {
                           const getUploadUrlRes = await GetSignedUrl({file_name: file.name})
                           if (getUploadUrlRes.code !== 0) {
                             message.error('获取上传地址失败');
+                            req.onError?.(new Error('获取上传地址失败'));
                             return;
                           }
                           // 上传
@@ -478,17 +494,21 @@ const Material: React.FC<MaterialProps> = (props) => {
                             body: file
                           });
                           if (uploadRes.clone().ok) {
+                            const downloadUrl = getUploadUrlRes?.data?.download_url;
+                            req.onSuccess?.(downloadUrl);
                             modalFormRef?.current?.setFieldsValue({
-                              file_url: getUploadUrlRes?.data?.download_url,
+                              file_url: downloadUrl,
                               file_size: String(file.size),
                               title: file.name
                             })
                             return;
                           }
                           message.error('上传图片失败');
+                          req.onError?.(new Error('上传图片失败'));
                           return;
                         } catch (e) {
                           message.error('上传图片失败');
+                          req.onError?.(e as Error);
                         }
                       }}
                     />
@@ -508,6 +528,10 @@ const Material: React.FC<MaterialProps> = (props) => {
                   <h2 className='dialog-title'> {targetUpdateMaterial.id ? '修改视频' : '添加视频'} </h2>
                   <ProForm.Item
                     name='file_url'
+                    getValueFromEvent={(e) => {
+                      if (typeof e === 'string') return e;
+                      return e?.file?.response || e?.fileList?.[0]?.response || '';
+                    }}
                   >
                     <Uploader
                       fileType='视频'
@@ -519,6 +543,7 @@ const Material: React.FC<MaterialProps> = (props) => {
                           const getUploadUrlRes = await GetSignedUrl({file_name: file.name})
                           if (getUploadUrlRes.code !== 0) {
                             message.error('获取上传地址失败');
+                            req.onError?.(new Error('获取上传地址失败'));
                             return;
                           }
                           // 上传
@@ -527,17 +552,21 @@ const Material: React.FC<MaterialProps> = (props) => {
                             body: file
                           });
                           if (uploadRes.clone().ok) {
+                            const downloadUrl = getUploadUrlRes?.data?.download_url;
+                            req.onSuccess?.(downloadUrl);
                             modalFormRef?.current?.setFieldsValue({
-                              file_url: getUploadUrlRes?.data?.download_url,
+                              file_url: downloadUrl,
                               file_size: String(file.size),
                               title: file.name
                             })
                             return;
                           }
                           message.error('上传视频失败');
+                          req.onError?.(new Error('上传视频失败'));
                           return;
                         } catch (e) {
                           message.error('上传视频失败');
+                          req.onError?.(e as Error);
                         }
                       }}
                     />
@@ -559,6 +588,10 @@ const Material: React.FC<MaterialProps> = (props) => {
                     className='dialog-title'> {targetUpdateMaterial.id ? `修改${props.fileType}` : `添加${props.fileType}`} </h2>
                   <ProForm.Item
                     name='file_url'
+                    getValueFromEvent={(e) => {
+                      if (typeof e === 'string') return e;
+                      return e?.file?.response || e?.fileList?.[0]?.response || '';
+                    }}
                   >
                     <Uploader
                       fileType={props.fileType}
@@ -570,6 +603,7 @@ const Material: React.FC<MaterialProps> = (props) => {
                           const getUploadUrlRes = await GetSignedUrl({file_name: file.name})
                           if (getUploadUrlRes.code !== 0) {
                             message.error('获取上传地址失败');
+                            req.onError?.(new Error('获取上传地址失败'));
                             return;
                           }
                           // 上传
@@ -578,17 +612,21 @@ const Material: React.FC<MaterialProps> = (props) => {
                             body: file
                           });
                           if (uploadRes.clone().ok) {
+                            const downloadUrl = getUploadUrlRes?.data?.download_url;
+                            req.onSuccess?.(downloadUrl);
                             modalFormRef?.current?.setFieldsValue({
-                              file_url: getUploadUrlRes?.data?.download_url,
+                              file_url: downloadUrl,
                               file_size: String(file.size),
                               title: file.name
                             })
                             return;
                           }
                           message.error(`上传${props.fileType}失败`);
+                          req.onError?.(new Error(`上传${props.fileType}失败`));
                           return;
                         } catch (e) {
                           message.error(`上传${props.fileType}失败`);
+                          req.onError?.(e as Error);
                         }
                       }}
                     />
